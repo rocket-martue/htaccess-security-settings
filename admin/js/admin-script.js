@@ -15,7 +15,7 @@
 		$( '.htaccess-ss-toggle-parent' ).on(
 			'change',
 			function () {
-				var $sub = $( this ).closest( 'td' ).find( '.htaccess-ss-sub-options' );
+				const $sub = $( this ).closest( 'td' ).find( '.htaccess-ss-sub-options' );
 				if ($( this ).is( ':checked' )) {
 					$sub.slideDown( 200 );
 				} else {
@@ -32,7 +32,7 @@
 		$( 'input[name="htaccess_ss_settings[csp_mode]"]' ).on(
 			'change',
 			function () {
-				var isEnforce = $( this ).val() === 'enforce';
+				const isEnforce = $( this ).val() === 'enforce';
 				$( '.htaccess-ss-csp-upgrade-row' ).toggle( isEnforce );
 			}
 		);
@@ -71,8 +71,8 @@
 			function (e) {
 				e.preventDefault();
 
-				var $btn     = $( this );
-				var $spinner = $btn.siblings( '.spinner' );
+				const $btn     = $( this );
+				const $spinner = $btn.siblings( '.spinner' );
 
 				$btn.prop( 'disabled', true );
 				$spinner.addClass( 'is-active' );
@@ -174,7 +174,7 @@
 		$( '#htaccess-ss-download-btn' ).on(
 			'click',
 			function () {
-				var url              = htaccessSS.ajaxUrl +
+				const url            = htaccessSS.ajaxUrl +
 					'?action=htaccess_ss_download&nonce=' +
 					encodeURIComponent( htaccessSS.downloadNonce );
 				window.location.href = url;

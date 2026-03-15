@@ -1,0 +1,69 @@
+# JavaScript Lint チェック＆自動修正
+# ESLintでJavaScriptのコード品質をチェックし、自動修正してコミットする
+
+name: JavaScript Lint
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '**.js'
+      - '.eslintrc*'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/javascript-lint.yml'
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - '**.js'
+      - '.eslintrc*'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/javascript-lint.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          if [ -f "package-lock.json" ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Run ESLint with auto-fix
+        run: npm run fix:js
+        continue-on-error: true
+
+      - name: Commit fixes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'style: ESLintによる自動修正'
+
+      - name: Run ESLint check
+        run: npm run lint:js

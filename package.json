@@ -1,0 +1,14 @@
+{
+	"name": "htaccess-security-settings",
+	"version": "1.0.0",
+	"description": "WordPress .htaccess Security Settings Plugin",
+	"private": true,
+	"scripts": {
+		"lint:js": "eslint \"admin/js/**/*.js\"",
+		"fix:js": "eslint --fix \"admin/js/**/*.js\""
+	},
+	"devDependencies": {
+		"@wordpress/eslint-plugin": "^21.0.0"
+	},
+	"license": "GPL-2.0-or-later"
+}

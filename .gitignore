@@ -9,6 +9,9 @@
 # ----- Composer -----
 vendor/
 
+# ----- Node.js -----
+node_modules/
+
 # ----- IDE / エディタ -----
 .idea/
 *.iml

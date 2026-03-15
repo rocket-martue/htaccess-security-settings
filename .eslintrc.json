@@ -1,0 +1,29 @@
+{
+	"root": true,
+	"extends": [
+		"plugin:@wordpress/eslint-plugin/recommended"
+	],
+	"env": {
+		"browser": true,
+		"es2021": true
+	},
+	"parserOptions": {
+		"ecmaVersion": "latest",
+		"sourceType": "script"
+	},
+	"globals": {
+		"wp": "readonly",
+		"jQuery": "readonly",
+		"$": "readonly",
+		"htaccessSS": "readonly"
+	},
+	"rules": {
+		"prettier/prettier": "off",
+		"no-console": "warn",
+		"no-unused-vars": "warn",
+		"no-redeclare": "off",
+		"camelcase": "off",
+		"jsdoc/empty-tags": "off",
+		"no-var": "warn"
+	}
+}
