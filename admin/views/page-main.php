@@ -18,6 +18,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="wrap">
 	<h1><?php esc_html_e( '.htaccess セキュリティ設定', 'htaccess-ss' ); ?></h1>
 
+	<div class="notice notice-info">
+		<p>
+			<?php
+			esc_html_e(
+				'このプラグインは .htaccess のセットアップウィザードです。設定を保存すると .htaccess にルールが書き込まれ、プラグインを無効化・削除してもルールはそのまま残ります。',
+				'htaccess-ss'
+			);
+			?>
+			<br>
+			<?php
+			esc_html_e(
+				'ルールを削除したい場合は、先に「すべての設定を削除」ボタンを使ってください。',
+				'htaccess-ss'
+			);
+			?>
+		</p>
+	</div>
+
 	<?php if ( 'saved' === $status ) : ?>
 		<div class="notice notice-success is-dismissible">
 			<p><?php esc_html_e( '設定を保存し、.htaccess に反映しました。', 'htaccess-ss' ); ?></p>
@@ -109,7 +127,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<input type="hidden" name="htaccess_ss_action" value="delete_all" />
 				<?php wp_nonce_field( 'htaccess_ss_delete_all', 'htaccess_ss_delete_all_nonce' ); ?>
 				<button type="submit" class="button htaccess-ss-btn-danger">
-					<?php esc_html_e( '全ての設定を削除', 'htaccess-ss' ); ?>
+					<?php esc_html_e( 'すべての設定を削除', 'htaccess-ss' ); ?>
 				</button>
 			</form>
 		</div>

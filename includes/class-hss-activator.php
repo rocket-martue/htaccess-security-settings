@@ -29,26 +29,11 @@ class HSS_Activator {
 	/**
 	 * プラグイン無効化時の処理
 	 *
-	 * .htaccess からプラグインのブロックを除去する
-	 * 設定はオプションに残す（再有効化時に復元できるように）
+	 * このプラグインはセットアップウィザードとして機能するため、
+	 * 無効化しても .htaccess のルールはそのまま残す。
+	 * ルールを削除したい場合は、無効化前に管理画面の「すべての設定を削除」ボタンを使用する。
 	 */
 	public static function deactivate() {
-		if ( ! function_exists( 'insert_with_markers' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/misc.php';
-		}
-
-		$writer = new HSS_Htaccess_Writer();
-
-		// ルート .htaccess からプラグインブロックを除去
-		$root_path = $writer->get_root_path();
-		if ( file_exists( $root_path ) ) {
-			insert_with_markers( $root_path, HSS_Htaccess_Writer::MARKER, '' );
-		}
-
-		// wp-admin/.htaccess からプラグインブロックを除去
-		$admin_path = $writer->get_wp_admin_path();
-		if ( file_exists( $admin_path ) ) {
-			insert_with_markers( $admin_path, HSS_Htaccess_Writer::MARKER, '' );
-		}
+		// .htaccess のルールは意図的に残す。
 	}
 }
