@@ -1,0 +1,61 @@
+# プラグインZIPファイルビルド
+# 手動実行で配布用ZIPファイルを作成する
+
+name: Build Plugin Zip
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (例: 1.0.0)'
+        required: false
+
+permissions: {}
+
+jobs:
+  build:
+    name: Build Plugin Zip
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    env:
+      PLUGIN_SLUG: htaccess-security-settings
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Get version
+        id: get_version
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=dev" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create plugin directory
+        run: |
+          mkdir -p build/${{ env.PLUGIN_SLUG }}
+          rsync -av \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.gitignore' \
+            --exclude='phpcs.xml' \
+            --exclude='composer.json' \
+            --exclude='composer.lock' \
+            --exclude='vendor' \
+            --exclude='build' \
+            ./ build/${{ env.PLUGIN_SLUG }}/
+
+      - name: Create ZIP file
+        run: |
+          cd build
+          zip -r ${{ env.PLUGIN_SLUG }}-${{ steps.get_version.outputs.version }}.zip ${{ env.PLUGIN_SLUG }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ env.PLUGIN_SLUG }}-${{ steps.get_version.outputs.version }}
+          path: build/${{ env.PLUGIN_SLUG }}-${{ steps.get_version.outputs.version }}.zip

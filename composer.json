@@ -1,0 +1,23 @@
+{
+	"name": "rocket-martue/htaccess-security-settings",
+	"description": "WordPress のセキュリティを強化するために .htaccess ファイルに設定を追加するプラグインです。",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"require": {
+		"php": ">=7.4"
+	},
+	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+		"wp-coding-standards/wpcs": "^3.0",
+		"phpcompatibility/phpcompatibility-wp": "^2.1"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"scripts": {
+		"phpcs": "phpcs --standard=phpcs.xml .",
+		"phpcbf": "phpcbf --standard=phpcs.xml ."
+	}
+}

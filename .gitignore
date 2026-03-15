@@ -1,0 +1,80 @@
+# ===================
+# Rocket Martue Post Importer - WordPress プラグイン用 .gitignore
+# ===================
+
+# ----- GitHub 設定 -----
+.github/skills/
+.copilot-instructions.md
+
+# ----- Composer -----
+vendor/
+
+# ----- IDE / エディタ -----
+.idea/
+*.iml
+.vscode/
+
+# ----- OS 生成ファイル -----
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ----- ログ / デバッグ -----
+*.log
+debug.log
+
+# ----- ビルド / 一時ファイル -----
+*.tmp
+*.bak
+
+# ----- .htaccess / .htpasswd -----
+*.htaccess
+*.htpasswd
+
+# ----- エディタ / IDE -----
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# ----- Node.js（Sass/Gulp/webpack 等を使う場合） -----
+node_modules/
+package-lock.json
+yarn.lock
+dist/
+
+# ----- PHP -----
+vendor/
+composer.lock
+
+# ----- ログ / 一時ファイル -----
+*.log
+*.sql
+*.sql.gz
+*.tar.gz
+*.zip
+/tmp/
+/temp/
+
+# ----- 環境設定ファイル -----
+.env
+.env.*
+!.env.example
+
+# ----- ローカルドキュメントファイル -----
+.local-docs/
+
+# ----- 機密情報ファイル等 -----
+サーバー情報.txt
+.docs/project.md
+.docs/development-plan.md

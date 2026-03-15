@@ -1,0 +1,10 @@
+{
+	"core": null,
+	"plugins": [
+		"."
+	],
+	"config": {
+		"WPLANG": "ja",
+		"FS_METHOD": "direct"
+	}
+}
