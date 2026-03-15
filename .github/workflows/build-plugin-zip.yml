@@ -1,9 +1,11 @@
 # プラグインZIPファイルビルド
-# 手動実行で配布用ZIPファイルを作成する
+# リリース時に配布用ZIPファイルを作成する
 
 name: Build Plugin Zip
 
 on:
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
       version:
@@ -17,7 +19,7 @@ jobs:
     name: Build Plugin Zip
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
 
     env:
       PLUGIN_SLUG: htaccess-security-settings
@@ -29,7 +31,9 @@ jobs:
       - name: Get version
         id: get_version
         run: |
-          if [ -n "${{ github.event.inputs.version }}" ]; then
+          if [ "${{ github.event_name }}" = "release" ]; then
+            echo "version=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
+          elif [ -n "${{ github.event.inputs.version }}" ]; then
             echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
           else
             echo "version=dev" >> $GITHUB_OUTPUT
@@ -46,16 +50,24 @@ jobs:
             --exclude='composer.json' \
             --exclude='composer.lock' \
             --exclude='vendor' \
+            --exclude='node_modules' \
+            --exclude='.local-docs' \
             --exclude='build' \
             ./ build/${{ env.PLUGIN_SLUG }}/
 
       - name: Create ZIP file
         run: |
           cd build
-          zip -r ${{ env.PLUGIN_SLUG }}-${{ steps.get_version.outputs.version }}.zip ${{ env.PLUGIN_SLUG }}
+          zip -r ${{ env.PLUGIN_SLUG }}.zip ${{ env.PLUGIN_SLUG }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v6
         with:
           name: ${{ env.PLUGIN_SLUG }}-${{ steps.get_version.outputs.version }}
-          path: build/${{ env.PLUGIN_SLUG }}-${{ steps.get_version.outputs.version }}.zip
+          path: build/${{ env.PLUGIN_SLUG }}.zip
+
+      - name: Upload to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/${{ env.PLUGIN_SLUG }}.zip
