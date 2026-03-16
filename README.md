@@ -120,6 +120,197 @@ composer phpcs
 composer phpcbf
 ```
 
+## デフォルト設定で生成される .htaccess
+
+プラグインを有効化し、初期設定のまま保存した場合に `.htaccess` へ書き込まれるブロックです。  
+IP ブロック・HTTPS リダイレクト・wp-admin Basic 認証はデフォルト OFF のため含まれません。
+
+```apache
+# BEGIN Htaccess Security Settings
+# ===========================
+# Security Settings
+# ===========================
+Options -MultiViews -Indexes
+
+ErrorDocument 403 default
+ErrorDocument 404 default
+
+# .htaccess へのアクセス禁止
+<Files .htaccess>
+	<IfModule mod_authz_core.c>
+		Require all denied
+	</IfModule>
+	<IfModule !mod_authz_core.c>
+		Order deny,allow
+		Deny from all
+	</IfModule>
+</Files>
+
+# XML-RPCへのアクセスを無効化
+<Files xmlrpc.php>
+	<IfModule mod_authz_core.c>
+		Require all denied
+	</IfModule>
+	<IfModule !mod_authz_core.c>
+		Order deny,allow
+		Deny from all
+	</IfModule>
+</Files>
+
+# wp-config.php を保護
+<Files wp-config.php>
+	<IfModule mod_authz_core.c>
+		Require all denied
+	</IfModule>
+	<IfModule !mod_authz_core.c>
+		Order deny,allow
+		Deny from all
+	</IfModule>
+</Files>
+
+# 特定のファイルタイプへのアクセスを制限
+<FilesMatch "\.(inc|log|sh|sql)$">
+	<IfModule mod_authz_core.c>
+		Require all denied
+	</IfModule>
+	<IfModule !mod_authz_core.c>
+		Order deny,allow
+		Deny from all
+	</IfModule>
+</FilesMatch>
+
+# ===========================
+# Rewrite Rules
+# ===========================
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+
+	# スラッシュの重複（//）を正規化
+	RewriteCond %{THE_REQUEST} \s[^\s]*//
+	RewriteRule ^ %{REQUEST_URI} [R=301,L,NE]
+
+	# 悪意のあるボット・スクリプトをブロック
+	RewriteCond %{HTTP_USER_AGENT} (wget|curl|libwww\-perl|python|nikto|sqlmap|timpibot) [NC]
+	RewriteRule .* - [F,L]
+
+	# バックドア/マルウェア探索をブロック
+	RewriteCond %{REQUEST_URI} (alfa\.php|adminfuns\.php|wp-fclass\.php|wp-themes\.php|ioxi-o\.php|0x\.php|akc\.php|txets\.php) [NC]
+	RewriteRule .* - [F,L]
+
+	# wp-*ディレクトリの多重ネストリクエストをブロック（内部リダイレクトループ防止）
+	RewriteCond %{REQUEST_URI} wp-(content|admin|includes)/.*wp-(content|admin|includes)/ [NC]
+	RewriteRule .* - [F,L]
+
+	# wp-includes/ ディレクトリの直接ブラウズをブロック
+	RewriteCond %{REQUEST_URI} ^/wp-includes/ [NC]
+	RewriteCond %{REQUEST_FILENAME} -d
+	RewriteRule .* - [F,L]
+
+</IfModule>
+
+# ===========================
+# Cache & Performance Settings
+# ===========================
+# Gzip圧縮
+<IfModule mod_deflate.c>
+	SetOutputFilter DEFLATE
+	AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+	AddOutputFilterByType DEFLATE application/javascript application/x-javascript application/json
+	AddOutputFilterByType DEFLATE application/xml application/xhtml+xml application/rss+xml
+	AddOutputFilterByType DEFLATE image/svg+xml
+	AddOutputFilterByType DEFLATE font/ttf font/otf font/woff font/woff2
+</IfModule>
+
+# ブラウザキャッシュ設定
+<IfModule mod_expires.c>
+	ExpiresActive On
+	ExpiresDefault "access plus 1 month"
+	ExpiresByType text/css "access plus 1 year"
+	ExpiresByType application/javascript "access plus 1 year"
+	ExpiresByType application/x-javascript "access plus 1 year"
+	ExpiresByType text/javascript "access plus 1 year"
+	ExpiresByType image/jpeg "access plus 1 month"
+	ExpiresByType image/png "access plus 1 month"
+	ExpiresByType image/gif "access plus 1 month"
+	ExpiresByType image/webp "access plus 1 month"
+	ExpiresByType image/svg+xml "access plus 1 month"
+	ExpiresByType image/x-icon "access plus 1 year"
+	ExpiresByType image/vnd.microsoft.icon "access plus 1 year"
+	ExpiresByType video/mp4 "access plus 1 month"
+	ExpiresByType video/webm "access plus 1 month"
+	ExpiresByType video/ogg "access plus 1 month"
+	ExpiresByType font/woff "access plus 1 year"
+	ExpiresByType font/woff2 "access plus 1 year"
+	ExpiresByType font/ttf "access plus 1 year"
+	ExpiresByType font/otf "access plus 1 year"
+	ExpiresByType application/atom+xml "access plus 1 hour"
+	ExpiresByType application/rdf+xml "access plus 1 hour"
+	ExpiresByType application/rss+xml "access plus 1 hour"
+	ExpiresByType application/json "access plus 0 seconds"
+	ExpiresByType application/ld+json "access plus 0 seconds"
+	ExpiresByType application/xml "access plus 0 seconds"
+	ExpiresByType text/xml "access plus 0 seconds"
+	ExpiresByType application/manifest+json "access plus 1 week"
+	ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# Cache-Control ヘッダー
+<IfModule mod_headers.c>
+	<FilesMatch "\.(css|js|jpg|jpeg|png|gif|webp|svg|ico|woff|woff2|ttf|otf)$">
+		Header set Cache-Control "public, max-age=31536000, immutable"
+	</FilesMatch>
+	<FilesMatch "\.(html|htm)$">
+		Header set Cache-Control "no-cache, must-revalidate"
+	</FilesMatch>
+</IfModule>
+
+# MIME Type
+<IfModule mime_module>
+	AddType image/x-icon .ico
+	AddType image/svg+xml .svg
+	AddType application/x-font-ttf .ttf
+	AddType application/x-font-woff .woff
+	AddType application/x-font-opentype .otf
+	AddType application/vnd.ms-fontobject .eot
+</IfModule>
+
+# ETags を無効化
+<IfModule mod_headers.c>
+	Header unset ETag
+</IfModule>
+FileETag None
+
+# Keep-Alive を有効化
+<IfModule mod_headers.c>
+	Header set Connection keep-alive
+</IfModule>
+
+# ===========================
+# Security Response Headers
+# ===========================
+<IfModule mod_headers.c>
+	# HSTS（HTTPS接続時のみ送信）
+	Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" "expr=%{HTTPS} == 'on' || %{HTTP:X-Forwarded-Proto} == 'https'"
+
+	# CSP
+	Header always set Content-Security-Policy "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https:; frame-ancestors 'self'; upgrade-insecure-requests;"
+
+	# X-Content-Type-Options
+	Header always set X-Content-Type-Options "nosniff"
+
+	# X-Frame-Options
+	Header always set X-Frame-Options "SAMEORIGIN"
+
+	# Referrer-Policy
+	Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+	# Permissions-Policy
+	Header always set Permissions-Policy "camera=(), microphone=(), payment=(), usb=(), gyroscope=(), magnetometer=()"
+</IfModule>
+
+# END Htaccess Security Settings
+```
+
 ## ライセンス
 
 GPL-2.0-or-later
