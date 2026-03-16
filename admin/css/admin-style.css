@@ -191,3 +191,199 @@
 	border-left: 4px solid #2271b1;
 	font-size: 13px;
 }
+
+/* =========================================================
+   3-column layout
+   ========================================================= */
+
+.htaccess-ss-layout {
+	display: grid;
+	grid-template-columns: 240px 1fr 520px;
+	gap: 0 20px;
+	align-items: start;
+	margin-top: 16px;
+}
+
+/* Left: action column */
+.htaccess-ss-action-column {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	position: sticky;
+	top: 32px;
+	min-width: 240px;
+}
+
+.htaccess-ss-action-column>.button,
+.htaccess-ss-action-form>.button,
+.htaccess-ss-action-form>button {
+	display: block;
+	width: 100%;
+	text-align: center;
+	box-sizing: border-box;
+}
+
+.htaccess-ss-action-column>.button {
+	justify-content: center;
+}
+
+.htaccess-ss-preview-action {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.htaccess-ss-preview-action .button {
+	flex: 1;
+	text-align: center;
+}
+
+.htaccess-ss-preview-action .spinner {
+	float: none;
+	margin: 0;
+}
+
+.htaccess-ss-action-form {
+	display: block;
+	margin: 0;
+}
+
+.htaccess-ss-backup-section {
+	margin-top: 4px;
+	padding-top: 12px;
+	border-top: 1px solid #dcdcde;
+}
+
+.htaccess-ss-backup-section .htaccess-ss-backup-time {
+	display: block;
+	font-size: 11px;
+	color: #50575e;
+	margin-bottom: 6px;
+}
+
+/* Center: main column */
+.htaccess-ss-main-column {
+	min-width: 0;
+}
+
+/* Right: file sidebar */
+.htaccess-ss-file-sidebar {
+	background: #1d2327;
+	border-radius: 4px;
+	padding: 14px 16px;
+	position: sticky;
+	top: 32px;
+	max-height: calc(100vh - 80px);
+	overflow-y: auto;
+	box-sizing: border-box;
+	min-width: 520px;
+}
+
+.htaccess-ss-sidebar-title {
+	color: #a7aaad;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin: 0 0 8px;
+	padding-bottom: 6px;
+	border-bottom: 1px solid #2c3338;
+}
+
+.htaccess-ss-sidebar-title--secondary {
+	margin-top: 16px;
+}
+
+.htaccess-ss-file-content {
+	color: #c3c4c7;
+	font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+	font-size: 11px;
+	line-height: 1.6;
+	white-space: pre;
+	overflow-x: auto;
+	margin: 0;
+	padding: 0;
+	background: none;
+	border: none;
+	word-wrap: normal;
+}
+
+.htaccess-ss-sidebar-empty {
+	color: #6d7780;
+	font-size: 12px;
+	margin: 0;
+}
+
+/* =========================================================
+   Responsive: medium (sidebar moves below)
+   ========================================================= */
+
+@media screen and (max-width: 1400px) {
+	.htaccess-ss-layout {
+		grid-template-columns: 190px 1fr;
+		grid-template-rows: auto auto;
+	}
+
+	.htaccess-ss-file-sidebar {
+		grid-column: 1 / -1;
+		position: static;
+		max-height: 280px;
+		min-width: 0;
+	}
+}
+
+/* =========================================================
+   Responsive: tablet (single column)
+   ========================================================= */
+
+@media screen and (max-width: 960px) {
+	.htaccess-ss-layout {
+		grid-template-columns: 1fr;
+	}
+
+	.htaccess-ss-action-column {
+		position: static;
+		flex-direction: row;
+		flex-wrap: wrap;
+		min-width: 0;
+	}
+
+	.htaccess-ss-action-column>.button,
+	.htaccess-ss-action-form>.button,
+	.htaccess-ss-action-form>button {
+		width: auto;
+	}
+
+	.htaccess-ss-backup-section {
+		width: 100%;
+		border-top: none;
+		padding-top: 0;
+	}
+
+	.htaccess-ss-file-sidebar {
+		max-height: 240px;
+	}
+}
+
+/* =========================================================
+   Responsive: WordPress mobile breakpoint
+   ========================================================= */
+
+@media screen and (max-width: 782px) {
+
+	.htaccess-ss-action-column>.button,
+	.htaccess-ss-action-form>.button,
+	.htaccess-ss-action-form>button {
+		display: block;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.htaccess-ss-preview-action {
+		width: 100%;
+	}
+
+	.htaccess-ss-file-sidebar {
+		max-height: 200px;
+	}
+}

@@ -399,6 +399,15 @@ class HSS_Admin_Page {
 		$writer       = new HSS_Htaccess_Writer();
 		$backup_time  = $writer->get_backup_time();
 
+		// 実際の .htaccess ファイル内容を取得（サイドバー表示用）
+		$root_htaccess_path = $writer->get_root_path();
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$root_htaccess = file_exists( $root_htaccess_path ) ? file_get_contents( $root_htaccess_path ) : '';
+
+		$admin_htaccess_path = $writer->get_wp_admin_path();
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$admin_htaccess = file_exists( $admin_htaccess_path ) ? file_get_contents( $admin_htaccess_path ) : '';
+
 		// ステータスメッセージ
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- 表示用の status パラメータのみ
 		$status = isset( $_GET['status'] ) ? sanitize_key( wp_unslash( $_GET['status'] ) ) : '';
