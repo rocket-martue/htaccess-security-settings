@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Htaccess Security Settings
  * Description: WordPress のセキュリティを強化するために .htaccess ファイルに設定を追加するプラグインです。
- * Version: 1.0.1
+ * Version: 1.1.0
  * Author: Rocket Martue
  * License: GPL-2.0-or-later
  * Text Domain: htaccess-ss
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'HSS_VERSION', '1.0.1' );
+define( 'HSS_VERSION', '1.1.0' );
 define( 'HSS_PLUGIN_FILE', __FILE__ );
 define( 'HSS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'HSS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

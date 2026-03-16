@@ -53,7 +53,6 @@ class HSS_Admin_Page {
 
 		add_action( 'admin_menu', array( $this, 'add_menu_page' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
-		add_action( 'wp_ajax_htaccess_ss_preview', array( $this, 'ajax_preview' ) );
 		add_action( 'wp_ajax_htaccess_ss_download', array( $this, 'ajax_download' ) );
 	}
 
@@ -102,7 +101,6 @@ class HSS_Admin_Page {
 			'htaccessSS',
 			array(
 				'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
-				'nonce'         => wp_create_nonce( 'htaccess_ss_preview' ),
 				'downloadNonce' => wp_create_nonce( 'htaccess_ss_download' ),
 			)
 		);
@@ -351,41 +349,6 @@ class HSS_Admin_Page {
 	}
 
 	/**
-	 * Ajax プレビュー処理
-	 */
-	public function ajax_preview() {
-		check_ajax_referer( 'htaccess_ss_preview', 'nonce' );
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( '権限がありません。' );
-		}
-
-		$settings = $this->settings->get_settings();
-		$builder  = new HSS_Htaccess_Builder();
-
-		$root_lines  = $builder->build_root( $settings );
-		$admin_lines = $builder->build_wp_admin( $settings );
-
-		$root_output  = "# BEGIN Htaccess Security Settings\n";
-		$root_output .= implode( "\n", $root_lines );
-		$root_output .= "\n# END Htaccess Security Settings";
-
-		$admin_output = '';
-		if ( ! empty( $admin_lines ) ) {
-			$admin_output  = "# BEGIN Htaccess Security Settings\n";
-			$admin_output .= implode( "\n", $admin_lines );
-			$admin_output .= "\n# END Htaccess Security Settings";
-		}
-
-		wp_send_json_success(
-			array(
-				'root'     => $root_output,
-				'wp_admin' => $admin_output,
-			)
-		);
-	}
-
-	/**
 	 * 設定ページをレンダリングする
 	 */
 	public function render_page() {
@@ -398,6 +361,15 @@ class HSS_Admin_Page {
 		$tabs         = $this->tabs;
 		$writer       = new HSS_Htaccess_Writer();
 		$backup_time  = $writer->get_backup_time();
+
+		// 実際の .htaccess ファイル内容を取得（サイドバー表示用）
+		$root_htaccess_path = $writer->get_root_path();
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$root_htaccess = file_exists( $root_htaccess_path ) ? file_get_contents( $root_htaccess_path ) : '';
+
+		$admin_htaccess_path = $writer->get_wp_admin_path();
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$admin_htaccess = file_exists( $admin_htaccess_path ) ? file_get_contents( $admin_htaccess_path ) : '';
 
 		// ステータスメッセージ
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- 表示用の status パラメータのみ

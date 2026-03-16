@@ -63,81 +63,6 @@
 	}
 
 	/**
-	 * Preview button: fetch generated .htaccess via Ajax.
-	 */
-	function initPreview() {
-		$( '#htaccess-ss-preview-btn' ).on(
-			'click',
-			function (e) {
-				e.preventDefault();
-
-				const $btn     = $( this );
-				const $spinner = $btn.siblings( '.spinner' );
-
-				$btn.prop( 'disabled', true );
-				$spinner.addClass( 'is-active' );
-
-				$.post(
-					htaccessSS.ajaxUrl,
-					{
-						action: 'htaccess_ss_preview',
-						_ajax_nonce: htaccessSS.nonce,
-					},
-					function (response) {
-						$btn.prop( 'disabled', false );
-						$spinner.removeClass( 'is-active' );
-
-						if (response.success) {
-							$( '#htaccess-ss-preview-root' ).text( response.data.root );
-
-							if (response.data.wp_admin) {
-								$( '#htaccess-ss-preview-admin' ).text( response.data.wp_admin ).show();
-								$( '#htaccess-ss-preview-admin-heading' ).show();
-							} else {
-								$( '#htaccess-ss-preview-admin' ).hide();
-								$( '#htaccess-ss-preview-admin-heading' ).hide();
-							}
-
-							$( '#htaccess-ss-preview-modal' ).fadeIn( 200 );
-						} else {
-							/* eslint-disable-next-line no-alert */
-							window.alert( response.data || 'プレビューの取得に失敗しました。' );
-						}
-					}
-				).fail(
-					function () {
-						$btn.prop( 'disabled', false );
-						$spinner.removeClass( 'is-active' );
-						/* eslint-disable-next-line no-alert */
-						window.alert( '通信エラーが発生しました。' );
-					}
-				);
-			}
-		);
-	}
-
-	/**
-	 * Modal close handlers.
-	 */
-	function initModal() {
-		$( '.htaccess-ss-modal-close, .htaccess-ss-modal-overlay' ).on(
-			'click',
-			function () {
-				$( '#htaccess-ss-preview-modal' ).fadeOut( 200 );
-			}
-		);
-
-		$( document ).on(
-			'keydown',
-			function (e) {
-				if (e.key === 'Escape') {
-					$( '#htaccess-ss-preview-modal' ).fadeOut( 200 );
-				}
-			}
-		);
-	}
-
-	/**
 	 * Restore confirmation.
 	 */
 	function initRestore() {
@@ -206,8 +131,6 @@
 			initCspModeToggle();
 			initCspToggle();
 			initPermissionsToggle();
-			initPreview();
-			initModal();
 			initRestore();
 			initResetDefaults();
 			initDownload();

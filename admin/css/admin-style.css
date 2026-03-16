@@ -80,109 +80,6 @@
 	color: #fff !important;
 }
 
-/* Preview button area */
-.htaccess-ss-actions {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-	margin: 16px 0;
-}
-
-.htaccess-ss-actions .spinner {
-	float: none;
-	margin: 0;
-}
-
-/* Modal overlay */
-.htaccess-ss-modal {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: 100100;
-}
-
-.htaccess-ss-modal-overlay {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0, 0, 0, 0.6);
-}
-
-.htaccess-ss-modal-content {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 80%;
-	max-width: 900px;
-	max-height: 80vh;
-	background: #fff;
-	border-radius: 4px;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-	display: flex;
-	flex-direction: column;
-}
-
-.htaccess-ss-modal-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 16px 20px;
-	border-bottom: 1px solid #dcdcde;
-}
-
-.htaccess-ss-modal-header h2 {
-	margin: 0;
-	font-size: 18px;
-}
-
-.htaccess-ss-modal-close {
-	background: none;
-	border: none;
-	font-size: 24px;
-	cursor: pointer;
-	padding: 0 4px;
-	color: #50575e;
-	line-height: 1;
-}
-
-.htaccess-ss-modal-close:hover {
-	color: #d63638;
-}
-
-.htaccess-ss-modal-body {
-	padding: 20px;
-	overflow-y: auto;
-}
-
-.htaccess-ss-modal-body h3 {
-	margin-top: 20px;
-	margin-bottom: 8px;
-}
-
-.htaccess-ss-modal-body h3:first-child {
-	margin-top: 0;
-}
-
-/* Preview code block */
-.htaccess-ss-preview-code {
-	background: #1d2327;
-	color: #c3c4c7;
-	padding: 16px;
-	border-radius: 4px;
-	font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
-	font-size: 13px;
-	line-height: 1.6;
-	white-space: pre-wrap;
-	word-wrap: break-word;
-	overflow-x: auto;
-	max-height: 400px;
-}
-
 /* Tab description area */
 .htaccess-ss-tab-description {
 	margin-bottom: 20px;
@@ -190,4 +87,171 @@
 	background: #f0f6fc;
 	border-left: 4px solid #2271b1;
 	font-size: 13px;
+}
+
+/* =========================================================
+	レイアウト: モバイルは縦並び、タブレット以上は横並び
+	========================================================= */
+
+.htaccess-ss-layout {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 2em;
+	align-items: start;
+	margin-top: 16px;
+}
+
+/* 左カラム: アクションボタン */
+.htaccess-ss-action-column {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.htaccess-ss-action-column>.button,
+.htaccess-ss-action-form>.button,
+.htaccess-ss-action-form>button {
+	display: block;
+	width: 100%;
+	text-align: center;
+	box-sizing: border-box;
+}
+
+.htaccess-ss-action-column>.button {
+	justify-content: center;
+}
+
+.htaccess-ss-action-form {
+	display: block;
+	margin: 0;
+}
+
+.htaccess-ss-backup-section {
+	margin-top: 4px;
+	width: 100%;
+}
+
+.htaccess-ss-backup-section .htaccess-ss-backup-time {
+	display: block;
+	font-size: 11px;
+	color: #50575e;
+	margin-bottom: 6px;
+}
+
+/* 中央カラム: メインコンテンツ */
+.htaccess-ss-main-column {
+	min-width: 0;
+}
+
+/* 右カラム: .htaccess サイドバー */
+.htaccess-ss-file-sidebar {
+	background: #1d2327;
+	border-radius: 4px;
+	padding: 14px 16px;
+	max-height: 400px;
+	overflow-y: auto;
+	box-sizing: border-box;
+}
+
+.htaccess-ss-sidebar-title {
+	color: #a7aaad;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin: 0 0 8px;
+	padding-bottom: 6px;
+	border-bottom: 1px solid #2c3338;
+}
+
+.htaccess-ss-sidebar-title--secondary {
+	margin-top: 16px;
+}
+
+.htaccess-ss-file-content {
+	color: #c3c4c7;
+	font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+	font-size: 11px;
+	line-height: 1.6;
+	white-space: pre;
+	overflow-x: auto;
+	margin: 0;
+	padding: 0;
+	background: none;
+	border: none;
+	word-wrap: normal;
+}
+
+.htaccess-ss-sidebar-empty {
+	color: #6d7780;
+	font-size: 12px;
+	margin: 0;
+}
+
+/* =========================================================
+	タブレット: ボタン横並び
+	========================================================= */
+
+@media screen and (min-width: 913px) {
+
+	.htaccess-ss-action-column>.button,
+	.htaccess-ss-action-form>.button,
+	.htaccess-ss-action-form>button {
+		width: auto;
+	}
+}
+
+/* =========================================================
+	デスクトップ: 2カラム（サイドバーは下に配置）
+	========================================================= */
+
+@media screen and (min-width: 1025px) {
+	.htaccess-ss-layout {
+		grid-template-columns: 240px 1fr;
+		grid-template-rows: auto auto;
+		gap: 0 20px;
+	}
+
+	.htaccess-ss-action-column {
+		flex-direction: column;
+		position: sticky;
+		top: 32px;
+		min-width: 240px;
+	}
+
+	.htaccess-ss-action-column>.button,
+	.htaccess-ss-action-form>.button,
+	.htaccess-ss-action-form>button {
+		width: 100%;
+	}
+
+	.htaccess-ss-backup-section {
+		width: auto;
+		padding-top: 12px;
+		border-top: 1px solid #dcdcde;
+	}
+
+	.htaccess-ss-file-sidebar {
+		grid-column: 1 / -1;
+		max-height: 280px;
+	}
+}
+
+/* =========================================================
+	ワイド: 3カラム（サイドバー右固定）
+	========================================================= */
+
+@media screen and (min-width: 1401px) {
+	.htaccess-ss-layout {
+		grid-template-columns: 240px 1fr 520px;
+	}
+
+	.htaccess-ss-file-sidebar {
+		grid-column: auto;
+		position: sticky;
+		top: 32px;
+		max-height: calc(100vh - 80px);
+		min-width: 520px;
+	}
 }

@@ -3,7 +3,7 @@ Contributors: rocketmartue
 Tags: htaccess, security, headers, csp, performance
 Requires at least: 6.0
 Tested up to: 6.8
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
