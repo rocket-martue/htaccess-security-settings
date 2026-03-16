@@ -379,8 +379,8 @@ class HSS_Admin_Page {
 
 		wp_send_json_success(
 			array(
-				'root'  => $root_output,
-				'admin' => $admin_output,
+				'root'     => $root_output,
+				'wp_admin' => $admin_output,
 			)
 		);
 	}
