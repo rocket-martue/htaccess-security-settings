@@ -78,13 +78,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php esc_html_e( '設定を保存して .htaccess に反映', 'htaccess-ss' ); ?>
 			</button>
 
-			<div class="htaccess-ss-preview-action">
-				<button type="button" id="htaccess-ss-preview-btn" class="button button-secondary">
-					<?php esc_html_e( '設定内容のプレビュー', 'htaccess-ss' ); ?>
-				</button>
-				<span class="spinner"></span>
-			</div>
-
 			<form method="post" action="" id="htaccess-ss-reset-form" class="htaccess-ss-action-form">
 				<input type="hidden" name="htaccess_ss_action" value="reset_defaults" />
 				<input type="hidden" name="_tab" value="<?php echo esc_attr( $current_tab ); ?>" />
@@ -186,5 +179,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	</div><!-- /.htaccess-ss-layout -->
 
-	<?php require HSS_PLUGIN_DIR . 'admin/views/partial-preview.php'; ?>
 </div>
