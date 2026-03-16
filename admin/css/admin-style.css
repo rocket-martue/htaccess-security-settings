@@ -90,25 +90,23 @@
 }
 
 /* =========================================================
-   3-column layout
+   レイアウト: モバイルは縦並び、タブレット以上は横並び
    ========================================================= */
 
 .htaccess-ss-layout {
 	display: grid;
-	grid-template-columns: 240px 1fr 520px;
-	gap: 0 20px;
+	grid-template-columns: 1fr;
+	gap: 2em;
 	align-items: start;
 	margin-top: 16px;
 }
 
-/* Left: action column */
+/* 左カラム: アクションボタン */
 .htaccess-ss-action-column {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
+	flex-wrap: wrap;
 	gap: 8px;
-	position: sticky;
-	top: 32px;
-	min-width: 240px;
 }
 
 .htaccess-ss-action-column>.button,
@@ -131,8 +129,7 @@
 
 .htaccess-ss-backup-section {
 	margin-top: 4px;
-	padding-top: 12px;
-	border-top: 1px solid #dcdcde;
+	width: 100%;
 }
 
 .htaccess-ss-backup-section .htaccess-ss-backup-time {
@@ -142,22 +139,19 @@
 	margin-bottom: 6px;
 }
 
-/* Center: main column */
+/* 中央カラム: メインコンテンツ */
 .htaccess-ss-main-column {
 	min-width: 0;
 }
 
-/* Right: file sidebar */
+/* 右カラム: .htaccess サイドバー */
 .htaccess-ss-file-sidebar {
 	background: #1d2327;
 	border-radius: 4px;
 	padding: 14px 16px;
-	position: sticky;
-	top: 32px;
-	max-height: calc(100vh - 80px);
+	max-height: 400px;
 	overflow-y: auto;
 	box-sizing: border-box;
-	min-width: 520px;
 }
 
 .htaccess-ss-sidebar-title {
@@ -196,71 +190,68 @@
 }
 
 /* =========================================================
-   Responsive: medium (sidebar moves below)
+   タブレット: ボタン横並び
    ========================================================= */
 
-@media screen and (max-width: 1400px) {
-	.htaccess-ss-layout {
-		grid-template-columns: 190px 1fr;
-		grid-template-rows: auto auto;
-	}
-
-	.htaccess-ss-file-sidebar {
-		grid-column: 1 / -1;
-		position: static;
-		max-height: 280px;
-		min-width: 0;
-	}
-}
-
-/* =========================================================
-   Responsive: tablet (single column)
-   ========================================================= */
-
-@media screen and (max-width: 960px) {
-	.htaccess-ss-layout {
-		grid-template-columns: 1fr;
-	}
-
-	.htaccess-ss-action-column {
-		position: static;
-		flex-direction: row;
-		flex-wrap: wrap;
-		min-width: 0;
-	}
+@media screen and (min-width: 913px) {
 
 	.htaccess-ss-action-column>.button,
 	.htaccess-ss-action-form>.button,
 	.htaccess-ss-action-form>button {
 		width: auto;
 	}
-
-	.htaccess-ss-backup-section {
-		width: 100%;
-		border-top: none;
-		padding-top: 0;
-	}
-
-	.htaccess-ss-file-sidebar {
-		max-height: 240px;
-	}
 }
 
 /* =========================================================
-   Responsive: WordPress mobile breakpoint
+   デスクトップ: 2カラム（サイドバーは下に配置）
    ========================================================= */
 
-@media screen and (max-width: 782px) {
+@media screen and (min-width: 1025px) {
+	.htaccess-ss-layout {
+		grid-template-columns: 240px 1fr;
+		grid-template-rows: auto auto;
+		gap: 0 20px;
+	}
+
+	.htaccess-ss-action-column {
+		flex-direction: column;
+		position: sticky;
+		top: 32px;
+		min-width: 240px;
+	}
 
 	.htaccess-ss-action-column>.button,
 	.htaccess-ss-action-form>.button,
 	.htaccess-ss-action-form>button {
-		display: block;
 		width: 100%;
-		box-sizing: border-box;
+	}
+
+	.htaccess-ss-backup-section {
+		width: auto;
+		padding-top: 12px;
+		border-top: 1px solid #dcdcde;
 	}
 
 	.htaccess-ss-file-sidebar {
-		max-height: 200px;
+		grid-column: 1 / -1;
+		max-height: 280px;
+	}
+}
+
+/* =========================================================
+   ワイド: 3カラム（サイドバー右固定）
+   ========================================================= */
+
+@media screen and (min-width: 1401px) {
+	.htaccess-ss-layout {
+		grid-template-columns: 240px 1fr 520px;
+	}
+
+	.htaccess-ss-file-sidebar {
+		grid-column: auto;
+		position: sticky;
+		top: 32px;
+		max-height: calc(100vh - 80px);
+		min-width: 520px;
 	}
 }
