@@ -199,7 +199,10 @@ class HSS_Htaccess_Writer {
 		// 既存の内容を読み込み
 		if ( file_exists( $file ) ) {
 			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-			$existing       = file_get_contents( $file );
+			$existing = file_get_contents( $file );
+			if ( false === $existing ) {
+				return new WP_Error( 'read_failed', '.htaccess の読み取りに失敗しました。' );
+			}
 			$existing_lines = explode( "\n", $existing );
 		} else {
 			$existing_lines = array();
@@ -224,6 +227,10 @@ class HSS_Htaccess_Writer {
 
 		// 書き込む内容がない場合（全設定 OFF）
 		if ( empty( $lines ) ) {
+			// ファイルが存在しなければ何もしない
+			if ( ! file_exists( $file ) ) {
+				return true;
+			}
 			$content = implode( "\n", $output );
 			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 			$result = file_put_contents( $file, $content, LOCK_EX );
@@ -277,7 +284,10 @@ class HSS_Htaccess_Writer {
 		}
 
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-		$existing       = file_get_contents( $file );
+		$existing = file_get_contents( $file );
+		if ( false === $existing ) {
+			return new WP_Error( 'read_failed', '.htaccess の読み取りに失敗しました。' );
+		}
 		$existing_lines = explode( "\n", $existing );
 
 		$output   = array();

@@ -280,22 +280,29 @@ class HSS_Admin_Page {
 			wp_die( esc_html__( '権限がありません。', 'htaccess-ss' ) );
 		}
 
+		// .htaccess からプラグインブロックを除去（backup() が先に走るので DB 削除より前に実行）
+		$writer       = new HSS_Htaccess_Writer();
+		$root_result  = $writer->write_root( array() );
+		$admin_result = $writer->write_wp_admin( array() );
+
 		// DB からすべてのオプションを削除
 		delete_option( HSS_Settings::OPTION_KEY );
 		delete_option( HSS_Settings::BACKUP_ROOT_KEY );
 		delete_option( HSS_Settings::BACKUP_ADMIN_KEY );
 		delete_option( HSS_Settings::BACKUP_TIME_KEY );
 
-		// .htaccess からプラグインブロックを除去
-		$writer = new HSS_Htaccess_Writer();
-		$writer->write_root( array() );
-		$writer->write_wp_admin( array() );
+		$status = 'deleted_all';
+		if ( is_wp_error( $root_result ) ) {
+			$status = 'error_root';
+		} elseif ( is_wp_error( $admin_result ) ) {
+			$status = 'error_admin';
+		}
 
 		wp_safe_redirect(
 			add_query_arg(
 				array(
 					'page'   => 'htaccess-security-settings',
-					'status' => 'deleted_all',
+					'status' => $status,
 				),
 				admin_url( 'options-general.php' )
 			)
