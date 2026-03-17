@@ -1,0 +1,18 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+	"landingPage": "/wp-admin/options-general.php?page=htaccess-security-settings",
+	"login": true,
+	"preferredVersions": {
+		"wp": "latest",
+		"php": "8.0"
+	},
+	"steps": [
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "url",
+				"url": "https://github.com/rocket-martue/htaccess-security-settings/archive/refs/heads/main.zip"
+			}
+		}
+	]
+}
