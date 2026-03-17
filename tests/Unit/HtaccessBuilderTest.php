@@ -188,7 +188,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * Options -MultiViews -Indexes が出力される
 	 */
 	public function test_options_multiviews_and_indexes() {
-		$settings = $this->get_all_off_settings();
+		$settings                                  = $this->get_all_off_settings();
 		$settings['options']['disable_multiviews'] = true;
 		$settings['options']['disable_indexes']    = true;
 
@@ -201,7 +201,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * MultiViews のみ有効
 	 */
 	public function test_options_multiviews_only() {
-		$settings = $this->get_all_off_settings();
+		$settings                                  = $this->get_all_off_settings();
 		$settings['options']['disable_multiviews'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -214,7 +214,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * ErrorDocument が出力される
 	 */
 	public function test_options_error_document() {
-		$settings = $this->get_all_off_settings();
+		$settings                              = $this->get_all_off_settings();
 		$settings['options']['error_document'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -231,7 +231,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * xmlrpc.php ブロックが出力される
 	 */
 	public function test_file_protection_xmlrpc() {
-		$settings = $this->get_all_off_settings();
+		$settings                            = $this->get_all_off_settings();
 		$settings['options']['block_xmlrpc'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -244,7 +244,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * wp-config.php 保護が出力される
 	 */
 	public function test_file_protection_wp_config() {
-		$settings = $this->get_all_off_settings();
+		$settings                                 = $this->get_all_off_settings();
 		$settings['options']['protect_wp_config'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -257,7 +257,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * .htaccess 保護が出力される
 	 */
 	public function test_file_protection_htaccess() {
-		$settings = $this->get_all_off_settings();
+		$settings                                = $this->get_all_off_settings();
 		$settings['options']['protect_htaccess'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -270,7 +270,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * 危険な拡張子ブロックが出力される
 	 */
 	public function test_file_protection_dangerous_extensions() {
-		$settings = $this->get_all_off_settings();
+		$settings                                   = $this->get_all_off_settings();
 		$settings['options']['block_dangerous_ext'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -283,7 +283,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * wp-login.php Basic 認証が出力される
 	 */
 	public function test_file_protection_wp_login_basic_auth() {
-		$settings = $this->get_all_off_settings();
+		$settings                                   = $this->get_all_off_settings();
 		$settings['options']['wp_login_basic_auth'] = true;
 		$settings['options']['htpasswd_path']       = '/path/to/.htpasswd';
 
@@ -299,7 +299,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * wp-login.php Basic 認証は htpasswd_path が空なら出力されない
 	 */
 	public function test_file_protection_wp_login_no_path_no_output() {
-		$settings = $this->get_all_off_settings();
+		$settings                                   = $this->get_all_off_settings();
 		$settings['options']['wp_login_basic_auth'] = true;
 		$settings['options']['htpasswd_path']       = '';
 
@@ -312,7 +312,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * ファイル保護ブロックが Apache 2.2/2.4 両対応になっている
 	 */
 	public function test_file_protection_apache_compat() {
-		$settings = $this->get_all_off_settings();
+		$settings                            = $this->get_all_off_settings();
 		$settings['options']['block_xmlrpc'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -331,7 +331,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * 単一 IP が Require not ip に変換される
 	 */
 	public function test_ip_block_single_ip() {
-		$settings = $this->get_all_off_settings();
+		$settings                        = $this->get_all_off_settings();
 		$settings['ip_block']['enabled'] = true;
 		$settings['ip_block']['list']    = '192.168.1.100';
 
@@ -347,7 +347,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * CIDR 表記が Require not ip に変換される
 	 */
 	public function test_ip_block_cidr() {
-		$settings = $this->get_all_off_settings();
+		$settings                        = $this->get_all_off_settings();
 		$settings['ip_block']['enabled'] = true;
 		$settings['ip_block']['list']    = '10.0.0.0/8';
 
@@ -360,7 +360,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * 複数 IP が全て Require not ip に変換される
 	 */
 	public function test_ip_block_multiple_ips() {
-		$settings = $this->get_all_off_settings();
+		$settings                        = $this->get_all_off_settings();
 		$settings['ip_block']['enabled'] = true;
 		$settings['ip_block']['list']    = "192.168.1.100\n10.0.0.0/8\n172.16.0.1";
 
@@ -375,7 +375,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * IP ブロック無効時は出力なし
 	 */
 	public function test_ip_block_disabled() {
-		$settings = $this->get_all_off_settings();
+		$settings                        = $this->get_all_off_settings();
 		$settings['ip_block']['enabled'] = false;
 		$settings['ip_block']['list']    = '192.168.1.100';
 
@@ -388,7 +388,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * IP ブロック有効だがリストが空なら出力なし
 	 */
 	public function test_ip_block_empty_list() {
-		$settings = $this->get_all_off_settings();
+		$settings                        = $this->get_all_off_settings();
 		$settings['ip_block']['enabled'] = true;
 		$settings['ip_block']['list']    = '';
 
@@ -405,7 +405,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * スラッシュ正規化が出力される
 	 */
 	public function test_rewrite_normalize_slashes() {
-		$settings = $this->get_all_off_settings();
+		$settings                                 = $this->get_all_off_settings();
 		$settings['rewrite']['normalize_slashes'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -419,7 +419,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * ボットブロックが出力される
 	 */
 	public function test_rewrite_block_bad_bots() {
-		$settings = $this->get_all_off_settings();
+		$settings                              = $this->get_all_off_settings();
 		$settings['rewrite']['block_bad_bots'] = true;
 		$settings['rewrite']['bad_bot_list']   = "wget\ncurl\nsqlmap";
 
@@ -437,7 +437,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * ボットブロック有効でもリストが空なら出力なし
 	 */
 	public function test_rewrite_block_bad_bots_empty_list() {
-		$settings = $this->get_all_off_settings();
+		$settings                              = $this->get_all_off_settings();
 		$settings['rewrite']['block_bad_bots'] = true;
 		$settings['rewrite']['bad_bot_list']   = '';
 
@@ -450,7 +450,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * バックドアブロックが出力される
 	 */
 	public function test_rewrite_block_backdoors() {
-		$settings = $this->get_all_off_settings();
+		$settings                               = $this->get_all_off_settings();
 		$settings['rewrite']['block_backdoors'] = true;
 		$settings['rewrite']['backdoor_list']   = "alfa.php\n0x.php";
 
@@ -466,7 +466,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * wp-nesting 防止が出力される
 	 */
 	public function test_rewrite_block_wp_nesting() {
-		$settings = $this->get_all_off_settings();
+		$settings                                = $this->get_all_off_settings();
 		$settings['rewrite']['block_wp_nesting'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -478,7 +478,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * wp-includes ディレクトリブラウズ防止が出力される
 	 */
 	public function test_rewrite_block_wp_includes_dir() {
-		$settings = $this->get_all_off_settings();
+		$settings                                     = $this->get_all_off_settings();
 		$settings['rewrite']['block_wp_includes_dir'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -491,7 +491,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * HTTPS リダイレクトが出力される
 	 */
 	public function test_rewrite_https_redirect() {
-		$settings = $this->get_all_off_settings();
+		$settings                              = $this->get_all_off_settings();
 		$settings['rewrite']['https_redirect'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -505,9 +505,9 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * HTTPS リダイレクト + X-Forwarded-Proto 対応
 	 */
 	public function test_rewrite_https_redirect_with_x_forwarded_proto() {
-		$settings = $this->get_all_off_settings();
-		$settings['rewrite']['https_redirect']     = true;
-		$settings['rewrite']['x_forwarded_proto']   = true;
+		$settings                                 = $this->get_all_off_settings();
+		$settings['rewrite']['https_redirect']    = true;
+		$settings['rewrite']['x_forwarded_proto'] = true;
 
 		$output = $this->build_root_string( $settings );
 
@@ -518,8 +518,8 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * HTTPS リダイレクトで X-Forwarded-Proto なし
 	 */
 	public function test_rewrite_https_redirect_without_x_forwarded_proto() {
-		$settings = $this->get_all_off_settings();
-		$settings['rewrite']['https_redirect']   = true;
+		$settings                                 = $this->get_all_off_settings();
+		$settings['rewrite']['https_redirect']    = true;
 		$settings['rewrite']['x_forwarded_proto'] = false;
 
 		$output = $this->build_root_string( $settings );
@@ -531,7 +531,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * 不正クエリブロックが出力される
 	 */
 	public function test_rewrite_block_bad_query() {
-		$settings = $this->get_all_off_settings();
+		$settings                               = $this->get_all_off_settings();
 		$settings['rewrite']['block_bad_query'] = true;
 		$settings['rewrite']['bad_query_list']  = "w\ntest_param";
 
@@ -545,7 +545,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * リライトルールは mod_rewrite の IfModule で囲まれる
 	 */
 	public function test_rewrite_section_wrapped_in_ifmodule() {
-		$settings = $this->get_all_off_settings();
+		$settings                                 = $this->get_all_off_settings();
 		$settings['rewrite']['normalize_slashes'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -562,9 +562,9 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * HSTS ヘッダーが出力される
 	 */
 	public function test_headers_hsts() {
-		$settings = $this->get_all_off_settings();
-		$settings['headers']['hsts_enabled']  = true;
-		$settings['headers']['hsts_max_age']  = 63072000;
+		$settings                            = $this->get_all_off_settings();
+		$settings['headers']['hsts_enabled'] = true;
+		$settings['headers']['hsts_max_age'] = 63072000;
 
 		$output = $this->build_root_string( $settings );
 
@@ -576,7 +576,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * HSTS に includeSubDomains が含まれる
 	 */
 	public function test_headers_hsts_include_subdomains() {
-		$settings = $this->get_all_off_settings();
+		$settings                                       = $this->get_all_off_settings();
 		$settings['headers']['hsts_enabled']            = true;
 		$settings['headers']['hsts_max_age']            = 63072000;
 		$settings['headers']['hsts_include_subdomains'] = true;
@@ -590,7 +590,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * HSTS に preload が含まれる
 	 */
 	public function test_headers_hsts_preload() {
-		$settings = $this->get_all_off_settings();
+		$settings                            = $this->get_all_off_settings();
 		$settings['headers']['hsts_enabled'] = true;
 		$settings['headers']['hsts_max_age'] = 63072000;
 		$settings['headers']['hsts_preload'] = true;
@@ -604,7 +604,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * HSTS は HTTPS 接続時のみ送信される（expr 条件付き）
 	 */
 	public function test_headers_hsts_https_only() {
-		$settings = $this->get_all_off_settings();
+		$settings                            = $this->get_all_off_settings();
 		$settings['headers']['hsts_enabled'] = true;
 		$settings['headers']['hsts_max_age'] = 63072000;
 
@@ -617,7 +617,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * CSP Enforce モードで Content-Security-Policy ヘッダーが出力される
 	 */
 	public function test_headers_csp_enforce() {
-		$settings = $this->get_all_off_settings();
+		$settings                               = $this->get_all_off_settings();
 		$settings['headers']['csp_enabled']     = true;
 		$settings['headers']['csp_mode']        = 'enforce';
 		$settings['headers']['csp_default_src'] = "'self'";
@@ -633,7 +633,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * CSP Report-Only モードで Content-Security-Policy-Report-Only が出力される
 	 */
 	public function test_headers_csp_report_only() {
-		$settings = $this->get_all_off_settings();
+		$settings                               = $this->get_all_off_settings();
 		$settings['headers']['csp_enabled']     = true;
 		$settings['headers']['csp_mode']        = 'report-only';
 		$settings['headers']['csp_default_src'] = "'self'";
@@ -647,7 +647,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * CSP Enforce モードで upgrade-insecure-requests が含まれる
 	 */
 	public function test_headers_csp_enforce_includes_upgrade_insecure() {
-		$settings = $this->get_all_off_settings();
+		$settings                                    = $this->get_all_off_settings();
 		$settings['headers']['csp_enabled']          = true;
 		$settings['headers']['csp_mode']             = 'enforce';
 		$settings['headers']['csp_upgrade_insecure'] = true;
@@ -662,7 +662,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * CSP Report-Only モードでは upgrade-insecure-requests が除外される
 	 */
 	public function test_headers_csp_report_only_excludes_upgrade_insecure() {
-		$settings = $this->get_all_off_settings();
+		$settings                                    = $this->get_all_off_settings();
 		$settings['headers']['csp_enabled']          = true;
 		$settings['headers']['csp_mode']             = 'report-only';
 		$settings['headers']['csp_upgrade_insecure'] = true;
@@ -678,7 +678,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * CSP の各ディレクティブが全て出力される
 	 */
 	public function test_headers_csp_all_directives() {
-		$settings = $this->get_all_off_settings();
+		$settings                                   = $this->get_all_off_settings();
 		$settings['headers']['csp_enabled']         = true;
 		$settings['headers']['csp_mode']            = 'enforce';
 		$settings['headers']['csp_default_src']     = "'self'";
@@ -706,7 +706,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * X-Content-Type-Options nosniff が出力される
 	 */
 	public function test_headers_x_content_type_options() {
-		$settings = $this->get_all_off_settings();
+		$settings                              = $this->get_all_off_settings();
 		$settings['headers']['x_content_type'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -719,7 +719,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * X-Frame-Options SAMEORIGIN が出力される
 	 */
 	public function test_headers_x_frame_options_sameorigin() {
-		$settings = $this->get_all_off_settings();
+		$settings                               = $this->get_all_off_settings();
 		$settings['headers']['x_frame_options'] = 'SAMEORIGIN';
 
 		$output = $this->build_root_string( $settings );
@@ -732,7 +732,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * X-Frame-Options DENY が出力される
 	 */
 	public function test_headers_x_frame_options_deny() {
-		$settings = $this->get_all_off_settings();
+		$settings                               = $this->get_all_off_settings();
 		$settings['headers']['x_frame_options'] = 'DENY';
 
 		$output = $this->build_root_string( $settings );
@@ -744,7 +744,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * Referrer-Policy が出力される
 	 */
 	public function test_headers_referrer_policy() {
-		$settings = $this->get_all_off_settings();
+		$settings                               = $this->get_all_off_settings();
 		$settings['headers']['referrer_policy'] = 'strict-origin-when-cross-origin';
 
 		$output = $this->build_root_string( $settings );
@@ -757,7 +757,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * Permissions-Policy が出力される
 	 */
 	public function test_headers_permissions_policy() {
-		$settings = $this->get_all_off_settings();
+		$settings                                   = $this->get_all_off_settings();
 		$settings['headers']['permissions_enabled'] = true;
 		$settings['headers']['perm_camera']         = true;
 		$settings['headers']['perm_microphone']     = true;
@@ -777,7 +777,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * Permissions-Policy で geolocation のみ有効
 	 */
 	public function test_headers_permissions_policy_geolocation_only() {
-		$settings = $this->get_all_off_settings();
+		$settings                                   = $this->get_all_off_settings();
 		$settings['headers']['permissions_enabled'] = true;
 		$settings['headers']['perm_geolocation']    = true;
 
@@ -791,7 +791,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * ヘッダーセクションは mod_headers の IfModule で囲まれる
 	 */
 	public function test_headers_section_wrapped_in_ifmodule() {
-		$settings = $this->get_all_off_settings();
+		$settings                              = $this->get_all_off_settings();
 		$settings['headers']['x_content_type'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -807,7 +807,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * Gzip 圧縮が出力される
 	 */
 	public function test_cache_gzip() {
-		$settings = $this->get_all_off_settings();
+		$settings                  = $this->get_all_off_settings();
 		$settings['cache']['gzip'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -820,7 +820,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * Expires ヘッダーが出力される
 	 */
 	public function test_cache_expires() {
-		$settings = $this->get_all_off_settings();
+		$settings                     = $this->get_all_off_settings();
 		$settings['cache']['expires'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -833,7 +833,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * Cache-Control immutable が出力される
 	 */
 	public function test_cache_control() {
-		$settings = $this->get_all_off_settings();
+		$settings                           = $this->get_all_off_settings();
 		$settings['cache']['cache_control'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -846,7 +846,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * ETag 無効化が出力される
 	 */
 	public function test_cache_etag_disable() {
-		$settings = $this->get_all_off_settings();
+		$settings                          = $this->get_all_off_settings();
 		$settings['cache']['etag_disable'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -859,7 +859,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * Keep-Alive が出力される
 	 */
 	public function test_cache_keep_alive() {
-		$settings = $this->get_all_off_settings();
+		$settings                        = $this->get_all_off_settings();
 		$settings['cache']['keep_alive'] = true;
 
 		$output = $this->build_root_string( $settings );
@@ -875,7 +875,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * wp-admin Basic 認証が出力される
 	 */
 	public function test_wp_admin_basic_auth() {
-		$settings = $this->get_all_off_settings();
+		$settings                              = $this->get_all_off_settings();
 		$settings['wp_admin']['basic_auth']    = true;
 		$settings['wp_admin']['htpasswd_path'] = '/path/to/.htpasswd';
 
@@ -891,7 +891,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * wp-admin Basic 認証で admin-ajax.php が除外される
 	 */
 	public function test_wp_admin_ajax_exclude() {
-		$settings = $this->get_all_off_settings();
+		$settings                              = $this->get_all_off_settings();
 		$settings['wp_admin']['basic_auth']    = true;
 		$settings['wp_admin']['htpasswd_path'] = '/path/to/.htpasswd';
 		$settings['wp_admin']['ajax_exclude']  = true;
@@ -907,7 +907,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * wp-admin upgrade.php にサーバー IP 除外が出力される
 	 */
 	public function test_wp_admin_upgrade_ip_exclude() {
-		$settings = $this->get_all_off_settings();
+		$settings                                   = $this->get_all_off_settings();
 		$settings['wp_admin']['basic_auth']         = true;
 		$settings['wp_admin']['htpasswd_path']      = '/path/to/.htpasswd';
 		$settings['wp_admin']['upgrade_ip_exclude'] = true;
@@ -924,7 +924,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * wp-admin Basic 認証無効時は空配列
 	 */
 	public function test_wp_admin_disabled_returns_empty() {
-		$settings = $this->get_all_off_settings();
+		$settings                           = $this->get_all_off_settings();
 		$settings['wp_admin']['basic_auth'] = false;
 
 		$result = $this->builder->build_wp_admin( $settings );
@@ -936,7 +936,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * wp-admin の htpasswd_path が空なら空配列
 	 */
 	public function test_wp_admin_empty_path_returns_empty() {
-		$settings = $this->get_all_off_settings();
+		$settings                              = $this->get_all_off_settings();
 		$settings['wp_admin']['basic_auth']    = true;
 		$settings['wp_admin']['htpasswd_path'] = '';
 
@@ -953,9 +953,9 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * 全設定を有効にした場合にエラーなく出力される
 	 */
 	public function test_build_root_all_enabled() {
-		$settings = HSS_Settings::get_defaults();
-		$settings['ip_block']['enabled'] = true;
-		$settings['ip_block']['list']    = "1.2.3.4\n5.6.7.8/24";
+		$settings                                   = HSS_Settings::get_defaults();
+		$settings['ip_block']['enabled']            = true;
+		$settings['ip_block']['list']               = "1.2.3.4\n5.6.7.8/24";
 		$settings['options']['wp_login_basic_auth'] = true;
 		$settings['options']['htpasswd_path']       = '/path/.htpasswd';
 		$settings['rewrite']['https_redirect']      = true;

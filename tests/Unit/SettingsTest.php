@@ -149,7 +149,7 @@ class SettingsTest extends WP_UnitTestCase {
 	 * save_settings で設定が保存され get_settings で取得できる
 	 */
 	public function test_save_and_get_settings() {
-		$defaults = HSS_Settings::get_defaults();
+		$defaults                                  = HSS_Settings::get_defaults();
 		$defaults['options']['disable_multiviews'] = false;
 
 		$this->settings->save_settings( $defaults );
@@ -534,7 +534,7 @@ class SettingsTest extends WP_UnitTestCase {
 	 */
 	public function test_sanitize_and_merge_preserves_other_tabs() {
 		// まず options タブをカスタマイズして保存
-		$defaults = HSS_Settings::get_defaults();
+		$defaults                                  = HSS_Settings::get_defaults();
 		$defaults['options']['disable_multiviews'] = false;
 		$this->settings->save_settings( $defaults );
 
