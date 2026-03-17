@@ -97,7 +97,8 @@ WordPress の管理画面から .htaccess のセキュリティ設定を GUI で
 == Changelog ==
 
 = 1.1.1 =
-* ドキュメント更新: README にセットアップウィザードの詳細説明を追加
+* WordPress Playground 対応: blueprint.json を追加し README にライブプレビューリンクを設置
+* readme.txt に v1.1.0 / v1.1.1 の Changelog・Upgrade Notice を追記
 
 = 1.1.0 =
 * 管理画面の UI を改善しモバイル対応レイアウトに変更
@@ -117,7 +118,7 @@ WordPress の管理画面から .htaccess のセキュリティ設定を GUI で
 == Upgrade Notice ==
 
 = 1.1.1 =
-ドキュメントの更新のみです。
+WordPress Playground でプラグインを即座に試せるようになりました。Changelog も追記されています。
 
 = 1.1.0 =
 管理画面の UI をモバイル対応に改善し、プレビュー機能を削除しました。IP ブロックタブのトグル表示バグも修正されています。
