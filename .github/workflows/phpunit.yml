@@ -23,6 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: write
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -73,7 +74,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: mbstring, xml, zip, intl, pdo, mysql
+          extensions: mbstring, xml, zip, intl, pdo, mysqli
           coverage: none
 
       - name: Install SVN
