@@ -59,6 +59,7 @@ dist/
 # ----- PHP -----
 vendor/
 composer.lock
+.phpunit.result.cache
 
 # ----- ログ / 一時ファイル -----
 *.log
