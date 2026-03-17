@@ -41,6 +41,11 @@
 		<exclude-pattern>*/blocks/*/editor.asset.php</exclude-pattern>
 	</rule>
 	
+	<!-- テストファイルの Doc コメントは日本語でメソッド名から始まるため除外 -->
+	<rule ref="Generic.Commenting.DocComment.ShortNotCapital">
+		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
+
 	<exclude-pattern>/node_modules/*</exclude-pattern>
 	<exclude-pattern>/vendor/*</exclude-pattern>
 	<exclude-pattern>*/assets/*</exclude-pattern>
