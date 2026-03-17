@@ -130,14 +130,13 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * 全機能 OFF でも MIME Type セクションが含まれる（常時出力）
+	 * 全機能 OFF で build_root は空配列を返す
 	 */
-	public function test_build_root_all_off_includes_mime_type() {
+	public function test_build_root_all_off_returns_empty() {
 		$settings = $this->get_all_off_settings();
-		$output   = $this->build_root_string( $settings );
+		$result   = $this->builder->build_root( $settings );
 
-		$this->assertStringContainsString( 'MIME Type', $output );
-		$this->assertStringContainsString( 'AddType', $output );
+		$this->assertSame( array(), $result );
 	}
 
 	/**

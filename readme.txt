@@ -3,7 +3,7 @@ Contributors: rocketmartue
 Tags: htaccess, security, headers, csp, performance
 Requires at least: 6.0
 Tested up to: 6.8
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -96,6 +96,10 @@ WordPress の管理画面から .htaccess のセキュリティ設定を GUI で
 
 == Changelog ==
 
+= 1.2.1 =
+* 「すべての設定を削除」実行時に .htaccess の空マーカーブロックが残る不具合を修正
+* MIME Type 定義をキャッシュ系設定が有効な場合のみ出力するように変更
+
 = 1.2.0 =
 * PHPUnit ユニットテストを導入（HSS_Htaccess_Builder / HSS_Settings / HSS_Htaccess_Writer）
 * GitHub Actions に PHPUnit テストワークフローを追加（PHP 7.4〜8.3 × WP 6.0〜latest マトリクス）
@@ -120,6 +124,9 @@ WordPress の管理画面から .htaccess のセキュリティ設定を GUI で
 * 初回リリース
 
 == Upgrade Notice ==
+
+= 1.2.1 =
+「すべての設定を削除」時に .htaccess の空マーカーブロックが残る不具合が修正されました。
 
 = 1.2.0 =
 PHPUnit ユニットテストと GitHub Actions CI を導入しました。プラグインの動作に変更はありません。

@@ -287,24 +287,9 @@ class HSS_Admin_Page {
 		delete_option( HSS_Settings::BACKUP_TIME_KEY );
 
 		// .htaccess からプラグインブロックを除去
-		if ( ! function_exists( 'insert_with_markers' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/misc.php';
-		}
-
 		$writer = new HSS_Htaccess_Writer();
-		$marker = HSS_Htaccess_Writer::MARKER;
-
-		$root_file = $writer->get_root_path();
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable
-		if ( file_exists( $root_file ) && is_writable( $root_file ) ) {
-			insert_with_markers( $root_file, $marker, '' );
-		}
-
-		$admin_file = $writer->get_wp_admin_path();
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable
-		if ( file_exists( $admin_file ) && is_writable( $admin_file ) ) {
-			insert_with_markers( $admin_file, $marker, '' );
-		}
+		$writer->write_root( array() );
+		$writer->write_wp_admin( array() );
 
 		wp_safe_redirect(
 			add_query_arg(

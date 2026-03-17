@@ -272,11 +272,33 @@ class HSS_Htaccess_Writer {
 	 * @return true|WP_Error
 	 */
 	private function remove_block( $file ) {
-		if ( ! function_exists( 'insert_with_markers' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/misc.php';
+		if ( ! file_exists( $file ) ) {
+			return true;
 		}
 
-		$result = insert_with_markers( $file, self::MARKER, '' );
-		return $result ? true : new WP_Error( 'remove_failed', '.htaccess からのブロック除去に失敗しました。' );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$existing       = file_get_contents( $file );
+		$existing_lines = explode( "\n", $existing );
+
+		$output   = array();
+		$in_block = false;
+		foreach ( $existing_lines as $line ) {
+			if ( false !== strpos( $line, '# BEGIN ' . self::MARKER ) ) {
+				$in_block = true;
+				continue;
+			}
+			if ( false !== strpos( $line, '# END ' . self::MARKER ) ) {
+				$in_block = false;
+				continue;
+			}
+			if ( ! $in_block ) {
+				$output[] = $line;
+			}
+		}
+
+		$content = implode( "\n", $output );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+		$result = file_put_contents( $file, $content, LOCK_EX );
+		return false !== $result ? true : new WP_Error( 'remove_failed', '.htaccess からのブロック除去に失敗しました。' );
 	}
 }
