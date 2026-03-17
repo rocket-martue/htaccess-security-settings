@@ -425,17 +425,20 @@ class HSS_Htaccess_Builder {
 			$lines[] = '';
 		}
 
-		// MIME Type（常に含める）
-		$lines[] = '# MIME Type';
-		$lines[] = '<IfModule mime_module>';
-		$lines[] = "\t" . 'AddType image/x-icon .ico';
-		$lines[] = "\t" . 'AddType image/svg+xml .svg';
-		$lines[] = "\t" . 'AddType application/x-font-ttf .ttf';
-		$lines[] = "\t" . 'AddType application/x-font-woff .woff';
-		$lines[] = "\t" . 'AddType application/x-font-opentype .otf';
-		$lines[] = "\t" . 'AddType application/vnd.ms-fontobject .eot';
-		$lines[] = '</IfModule>';
-		$lines[] = '';
+		// MIME Type（キャッシュ系設定が1つ以上有効な場合のみ含める）
+		$has_cache_settings = $cache['gzip'] || $cache['expires'] || $cache['cache_control'] || $cache['etag_disable'] || $cache['keep_alive'];
+		if ( $has_cache_settings ) {
+			$lines[] = '# MIME Type';
+			$lines[] = '<IfModule mime_module>';
+			$lines[] = "\t" . 'AddType image/x-icon .ico';
+			$lines[] = "\t" . 'AddType image/svg+xml .svg';
+			$lines[] = "\t" . 'AddType application/x-font-ttf .ttf';
+			$lines[] = "\t" . 'AddType application/x-font-woff .woff';
+			$lines[] = "\t" . 'AddType application/x-font-opentype .otf';
+			$lines[] = "\t" . 'AddType application/vnd.ms-fontobject .eot';
+			$lines[] = '</IfModule>';
+			$lines[] = '';
+		}
 
 		// ETag 無効化
 		if ( $cache['etag_disable'] ) {
