@@ -3,7 +3,7 @@ Contributors: rocketmartue
 Tags: htaccess, security, headers, csp, performance
 Requires at least: 6.0
 Tested up to: 6.8
-Stable tag: 1.1.1
+Stable tag: 1.2.0
 Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -96,6 +96,10 @@ WordPress の管理画面から .htaccess のセキュリティ設定を GUI で
 
 == Changelog ==
 
+= 1.2.0 =
+* PHPUnit ユニットテストを導入（HSS_Htaccess_Builder / HSS_Settings / HSS_Htaccess_Writer）
+* GitHub Actions に PHPUnit テストワークフローを追加（PHP 7.4〜8.3 × WP 6.0〜latest マトリクス）
+
 = 1.1.1 =
 * WordPress Playground 対応: blueprint.json を追加し README にライブプレビューリンクを設置
 * readme.txt に v1.1.0 / v1.1.1 の Changelog・Upgrade Notice を追記
@@ -116,6 +120,9 @@ WordPress の管理画面から .htaccess のセキュリティ設定を GUI で
 * 初回リリース
 
 == Upgrade Notice ==
+
+= 1.2.0 =
+PHPUnit ユニットテストと GitHub Actions CI を導入しました。プラグインの動作に変更はありません。
 
 = 1.1.1 =
 WordPress Playground でプラグインを即座に試せるようになりました。Changelog も追記されています。
