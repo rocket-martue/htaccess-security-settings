@@ -3,7 +3,7 @@ Contributors: rocketmartue
 Tags: htaccess, security, headers, csp, performance
 Requires at least: 6.0
 Tested up to: 6.8
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -96,6 +96,17 @@ WordPress の管理画面から .htaccess のセキュリティ設定を GUI で
 
 == Changelog ==
 
+= 1.1.1 =
+* WordPress Playground 対応: blueprint.json を追加し README にライブプレビューリンクを設置
+* readme.txt に v1.1.0 / v1.1.1 の Changelog・Upgrade Notice を追記
+
+= 1.1.0 =
+* 管理画面の UI を改善しモバイル対応レイアウトに変更
+* プレビュー機能を削除（ボタン・モーダル・Ajax 関連コードを全除去）
+* IP ブロックタブのトグル表示バグを修正
+* 管理画面の JSON レスポンスで 'admin' キーを 'wp_admin' に変更
+* デフォルト設定で生成される .htaccess 例を README に追加
+
 = 1.0.1 =
 * セットアップウィザードとしての設計に変更: 無効化・アンインストール時に .htaccess のルールを残すよう変更
 * 管理画面にセットアップウィザードである旨の案内 notice を追加
@@ -105,6 +116,12 @@ WordPress の管理画面から .htaccess のセキュリティ設定を GUI で
 * 初回リリース
 
 == Upgrade Notice ==
+
+= 1.1.1 =
+WordPress Playground でプラグインを即座に試せるようになりました。Changelog も追記されています。
+
+= 1.1.0 =
+管理画面の UI をモバイル対応に改善し、プレビュー機能を削除しました。IP ブロックタブのトグル表示バグも修正されています。
 
 = 1.0.1 =
 プラグインを無効化・削除しても .htaccess のルールが残るようになりました。ルールを削除したい場合は「すべての設定を削除」ボタンをご利用ください。
