@@ -4,7 +4,7 @@
 	"login": true,
 	"preferredVersions": {
 		"wp": "latest",
-		"php": "8.0"
+		"php": "8.3"
 	},
 	"steps": [
 		{
@@ -13,6 +13,10 @@
 				"resource": "url",
 				"url": "https://github.com/rocket-martue/htaccess-security-settings/archive/refs/heads/main.zip"
 			}
+		},
+		{
+			"step": "setSiteLanguage",
+			"language": "ja"
 		}
 	]
 }
