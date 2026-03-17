@@ -4,6 +4,7 @@
  * Description: WordPress のセキュリティを強化するために .htaccess ファイルに設定を追加するプラグインです。
  * Version: 1.2.0
  * Author: Rocket Martue
+ * Plugin URI: https://github.com/rocket-martue/htaccess-security-settings
  * License: GPL-2.0-or-later
  * Text Domain: htaccess-ss
  *
