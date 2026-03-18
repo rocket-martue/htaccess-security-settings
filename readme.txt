@@ -101,7 +101,7 @@ WordPress の管理画面から .htaccess のセキュリティ設定を GUI で
 * ビューテンプレート `page-main.php` にフェイルセーフとして権限チェックを追加
 * 権限チェックのユニットテスト（AdminPageTest）を追加
 * ビューファイルの `style` 属性出力を `esc_attr()` でエスケープ
-* `htpasswd_path` に `realpath()` / `file_exists()` / `is_dir()` のバリデーションを追加
+* `htpasswd_path` に `realpath()` / `is_file()` / `is_readable()` のバリデーションを追加
 
 = 1.3.0 =
 * プリセット機能を追加（おすすめ設定・セキュリティヘッダーのみ・パフォーマンス重視・最大セキュリティ）
