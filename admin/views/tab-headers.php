@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php esc_html_e( 'HSTS を有効にする', 'htaccess-ss' ); ?>
 			</label>
 			<p class="description"><?php esc_html_e( 'ブラウザに「今後必ずHTTPSで接続する」よう指示し、中間者攻撃を防ぎます。', 'htaccess-ss' ); ?></p>
-			<div class="htaccess-ss-hsts-options htaccess-ss-sub-options" <?php echo $tab_settings['hsts_enabled'] ? '' : 'style="display:none;"'; ?>>
+			<div class="htaccess-ss-hsts-options htaccess-ss-sub-options" <?php echo $tab_settings['hsts_enabled'] ? '' : 'style="' . esc_attr( 'display:none;' ) . '"'; ?>>
 				<label for="htaccess-ss-hsts-max-age"><?php esc_html_e( 'max-age（秒）', 'htaccess-ss' ); ?></label>
 				<input type="number" id="htaccess-ss-hsts-max-age" name="htaccess_ss_settings[hsts_max_age]" value="<?php echo esc_attr( $tab_settings['hsts_max_age'] ); ?>" min="0" max="126144000" class="small-text" />
 				<span class="description"><?php esc_html_e( '推奨: 63072000（2年）', 'htaccess-ss' ); ?></span>
@@ -54,7 +54,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</tr>
 </table>
 
-<div class="htaccess-ss-csp-options htaccess-ss-sub-options" <?php echo $tab_settings['csp_enabled'] ? '' : 'style="display:none;"'; ?>>
+<div class="htaccess-ss-csp-options htaccess-ss-sub-options" <?php echo $tab_settings['csp_enabled'] ? '' : 'style="' . esc_attr( 'display:none;' ) . '"'; ?>>
 	<table class="form-table" role="presentation">
 		<tr>
 			<th scope="row"><?php esc_html_e( 'CSP モード', 'htaccess-ss' ); ?></th>
@@ -73,7 +73,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</fieldset>
 			</td>
 		</tr>
-		<tr class="htaccess-ss-csp-upgrade-row" <?php echo 'enforce' === $tab_settings['csp_mode'] ? '' : 'style="display:none;"'; ?>>
+		<tr class="htaccess-ss-csp-upgrade-row" <?php echo 'enforce' === $tab_settings['csp_mode'] ? '' : 'style="' . esc_attr( 'display:none;' ) . '"'; ?>>
 			<th scope="row"><?php esc_html_e( 'upgrade-insecure-requests', 'htaccess-ss' ); ?></th>
 			<td>
 				<label>
@@ -218,7 +218,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</tr>
 </table>
 
-<div class="htaccess-ss-perm-options htaccess-ss-sub-options" <?php echo $tab_settings['permissions_enabled'] ? '' : 'style="display:none;"'; ?>>
+<div class="htaccess-ss-perm-options htaccess-ss-sub-options" <?php echo $tab_settings['permissions_enabled'] ? '' : 'style="' . esc_attr( 'display:none;' ) . '"'; ?>>
 	<table class="form-table" role="presentation">
 		<tr>
 			<th scope="row"><?php esc_html_e( '無効にする API', 'htaccess-ss' ); ?></th>

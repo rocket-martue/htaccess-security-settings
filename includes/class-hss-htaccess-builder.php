@@ -74,8 +74,14 @@ class HSS_Htaccess_Builder {
 			return array();
 		}
 
+		$htpasswd_path = sanitize_text_field( $admin['htpasswd_path'] );
+		$real_path     = realpath( $htpasswd_path );
+		if ( ! $real_path || ! file_exists( $real_path ) || is_dir( $real_path ) ) {
+			return array();
+		}
+
 		$lines   = array();
-		$lines[] = 'AuthUserFile "' . $admin['htpasswd_path'] . '"';
+		$lines[] = 'AuthUserFile "' . $real_path . '"';
 		$lines[] = 'AuthName "Member Site"';
 		$lines[] = 'AuthType BASIC';
 		$lines[] = 'require valid-user';
@@ -165,14 +171,18 @@ class HSS_Htaccess_Builder {
 
 		// wp-login.php Basic 認証
 		if ( $options['wp_login_basic_auth'] && ! empty( $options['htpasswd_path'] ) ) {
-			$lines[] = '# wp-login.php を保護';
-			$lines[] = '<Files wp-login.php>';
-			$lines[] = "\t" . 'AuthUserFile "' . $options['htpasswd_path'] . '"';
-			$lines[] = "\t" . 'AuthName "Member Site"';
-			$lines[] = "\t" . 'AuthType BASIC';
-			$lines[] = "\t" . 'require valid-user';
-			$lines[] = '</Files>';
-			$lines[] = '';
+			$htpasswd_path = sanitize_text_field( $options['htpasswd_path'] );
+			$real_path     = realpath( $htpasswd_path );
+			if ( $real_path && file_exists( $real_path ) && ! is_dir( $real_path ) ) {
+				$lines[] = '# wp-login.php を保護';
+				$lines[] = '<Files wp-login.php>';
+				$lines[] = "\t" . 'AuthUserFile "' . $real_path . '"';
+				$lines[] = "\t" . 'AuthName "Member Site"';
+				$lines[] = "\t" . 'AuthType BASIC';
+				$lines[] = "\t" . 'require valid-user';
+				$lines[] = '</Files>';
+				$lines[] = '';
+			}
 		}
 
 		// .htaccess 保護
