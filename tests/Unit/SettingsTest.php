@@ -616,7 +616,7 @@ class SettingsTest extends WP_UnitTestCase {
 	// =========================================================================
 
 	/**
-	 * get_presets が全プリセットキーを返す
+	 * get_presets が defaults を除くプリセットキーを返す
 	 */
 	public function test_get_presets_has_all_keys() {
 		$presets       = HSS_Settings::get_presets();
