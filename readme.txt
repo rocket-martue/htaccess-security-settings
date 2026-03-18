@@ -3,7 +3,7 @@ Contributors: rocketmartue
 Tags: htaccess, security, headers, csp, performance
 Requires at least: 6.0
 Tested up to: 6.8
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -95,6 +95,11 @@ WordPress の管理画面から .htaccess のセキュリティ設定を GUI で
 いいえ。このプラグインは Apache の `.htaccess` に特化しています。Nginx や LiteSpeed 等では動作しません。
 
 == Changelog ==
+
+= 1.3.1 =
+* `handle_form_submission()` の入口に早期権限チェックを追加（多層防御の強化）
+* ビューテンプレート `page-main.php` にフェイルセーフとして権限チェックを追加
+* 権限チェックのユニットテスト（AdminPageTest）を追加
 
 = 1.3.0 =
 * プリセット機能を追加（おすすめ設定・セキュリティヘッダーのみ・パフォーマンス重視・最大セキュリティ）

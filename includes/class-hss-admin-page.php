@@ -115,6 +115,10 @@ class HSS_Admin_Page {
 			return;
 		}
 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$action = sanitize_key( wp_unslash( $_POST['htaccess_ss_action'] ) );
 
