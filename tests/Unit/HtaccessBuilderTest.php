@@ -130,6 +130,15 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * ヘルパー: recommended プリセットの設定を返す
+	 *
+	 * @return array
+	 */
+	private function get_recommended_settings() {
+		return HSS_Settings::get_preset( 'recommended' );
+	}
+
+	/**
 	 * 全機能 OFF で build_root は空配列を返す
 	 */
 	public function test_build_root_all_off_returns_empty() {
@@ -140,40 +149,40 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * デフォルト設定でセキュリティセクションヘッダーが出力される
+	 * おすすめ設定でセキュリティセクションヘッダーが出力される
 	 */
-	public function test_build_root_defaults_has_security_section() {
-		$settings = HSS_Settings::get_defaults();
+	public function test_build_root_recommended_has_security_section() {
+		$settings = $this->get_recommended_settings();
 		$output   = $this->build_root_string( $settings );
 
 		$this->assertStringContainsString( '# Security Settings', $output );
 	}
 
 	/**
-	 * デフォルト設定でリライトルールセクションが出力される
+	 * おすすめ設定でリライトルールセクションが出力される
 	 */
-	public function test_build_root_defaults_has_rewrite_section() {
-		$settings = HSS_Settings::get_defaults();
+	public function test_build_root_recommended_has_rewrite_section() {
+		$settings = $this->get_recommended_settings();
 		$output   = $this->build_root_string( $settings );
 
 		$this->assertStringContainsString( '# Rewrite Rules', $output );
 	}
 
 	/**
-	 * デフォルト設定でキャッシュセクションが出力される
+	 * おすすめ設定でキャッシュセクションが出力される
 	 */
-	public function test_build_root_defaults_has_cache_section() {
-		$settings = HSS_Settings::get_defaults();
+	public function test_build_root_recommended_has_cache_section() {
+		$settings = $this->get_recommended_settings();
 		$output   = $this->build_root_string( $settings );
 
 		$this->assertStringContainsString( '# Cache & Performance Settings', $output );
 	}
 
 	/**
-	 * デフォルト設定でヘッダーセクションが出力される
+	 * おすすめ設定でヘッダーセクションが出力される
 	 */
-	public function test_build_root_defaults_has_headers_section() {
-		$settings = HSS_Settings::get_defaults();
+	public function test_build_root_recommended_has_headers_section() {
+		$settings = $this->get_recommended_settings();
 		$output   = $this->build_root_string( $settings );
 
 		$this->assertStringContainsString( '# Security Response Headers', $output );
@@ -952,12 +961,12 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * 全設定を有効にした場合にエラーなく出力される
 	 */
 	public function test_build_root_all_enabled() {
-		$settings                                   = HSS_Settings::get_defaults();
+		$settings = $this->get_recommended_settings();
+
 		$settings['ip_block']['enabled']            = true;
 		$settings['ip_block']['list']               = "1.2.3.4\n5.6.7.8/24";
 		$settings['options']['wp_login_basic_auth'] = true;
 		$settings['options']['htpasswd_path']       = '/path/.htpasswd';
-		$settings['rewrite']['https_redirect']      = true;
 		$settings['rewrite']['block_bad_query']     = true;
 		$settings['rewrite']['bad_query_list']      = 'w';
 

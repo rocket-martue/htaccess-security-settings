@@ -233,11 +233,7 @@ class HSS_Settings {
 				'settings'    => array_replace_recursive(
 					$defaults,
 					array(
-						'options' => array(
-							'disable_multiviews' => true,
-							'disable_indexes'    => true,
-						),
-						'cache'   => array(
+						'cache' => array(
 							'gzip'          => true,
 							'expires'       => true,
 							'cache_control' => true,
