@@ -81,8 +81,8 @@
 	 * Preset apply: enable button on select change and show confirm dialog.
 	 */
 	function initPreset() {
-		var $select = $( '#htaccess-ss-preset-select' );
-		var $button = $( '#htaccess-ss-preset-btn' );
+		const $select = $( '#htaccess-ss-preset-select' );
+		const $button = $( '#htaccess-ss-preset-btn' );
 
 		$select.on(
 			'change',
@@ -94,7 +94,7 @@
 		$( '#htaccess-ss-preset-form' ).on(
 			'submit',
 			function (e) {
-				var selected = $select.find( 'option:selected' ).text();
+				const selected = $select.find( 'option:selected' ).text();
 				/* eslint-disable-next-line no-alert */
 				if ( ! window.confirm(
 					'「' + selected + '」を適用します。現在の設定はすべて上書きされます。よろしいですか？'
