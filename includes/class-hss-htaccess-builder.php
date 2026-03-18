@@ -15,6 +15,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 class HSS_Htaccess_Builder {
 
 	/**
+	 * Htpasswd パスを検証し、実パスを返す
+	 *
+	 * 設定保存時に sanitize_text_field() 済みのため、ここでは realpath() による
+	 * パス解決と存在チェックのみ行う。
+	 *
+	 * @param string $path 入力パス
+	 * @return string|false 検証済み実パス。無効なら false
+	 */
+	private function resolve_htpasswd_path( $path ) {
+		if ( ! is_string( $path ) ) {
+			return false;
+		}
+		$real_path = realpath( trim( $path ) );
+		if ( ! $real_path || ! is_file( $real_path ) || ! is_readable( $real_path ) ) {
+			return false;
+		}
+		return $real_path;
+	}
+
+	/**
 	 * ルート .htaccess のディレクティブを生成する
 	 *
 	 * @param array $settings 全設定配列
@@ -74,8 +94,13 @@ class HSS_Htaccess_Builder {
 			return array();
 		}
 
+		$real_path = $this->resolve_htpasswd_path( $admin['htpasswd_path'] );
+		if ( ! $real_path ) {
+			return array();
+		}
+
 		$lines   = array();
-		$lines[] = 'AuthUserFile "' . $admin['htpasswd_path'] . '"';
+		$lines[] = 'AuthUserFile "' . $real_path . '"';
 		$lines[] = 'AuthName "Member Site"';
 		$lines[] = 'AuthType BASIC';
 		$lines[] = 'require valid-user';
@@ -165,14 +190,17 @@ class HSS_Htaccess_Builder {
 
 		// wp-login.php Basic 認証
 		if ( $options['wp_login_basic_auth'] && ! empty( $options['htpasswd_path'] ) ) {
-			$lines[] = '# wp-login.php を保護';
-			$lines[] = '<Files wp-login.php>';
-			$lines[] = "\t" . 'AuthUserFile "' . $options['htpasswd_path'] . '"';
-			$lines[] = "\t" . 'AuthName "Member Site"';
-			$lines[] = "\t" . 'AuthType BASIC';
-			$lines[] = "\t" . 'require valid-user';
-			$lines[] = '</Files>';
-			$lines[] = '';
+			$real_path = $this->resolve_htpasswd_path( $options['htpasswd_path'] );
+			if ( $real_path ) {
+				$lines[] = '# wp-login.php を保護';
+				$lines[] = '<Files wp-login.php>';
+				$lines[] = "\t" . 'AuthUserFile "' . $real_path . '"';
+				$lines[] = "\t" . 'AuthName "Member Site"';
+				$lines[] = "\t" . 'AuthType BASIC';
+				$lines[] = "\t" . 'require valid-user';
+				$lines[] = '</Files>';
+				$lines[] = '';
+			}
 		}
 
 		// .htaccess 保護

@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php esc_html_e( 'IP ブロックを有効にする', 'htaccess-ss' ); ?>
 			</label>
 			<p class="description"><?php esc_html_e( '指定したIPアドレスからのアクセスを 403 Forbidden で拒否します。', 'htaccess-ss' ); ?></p>
-			<div class="htaccess-ss-ip-options htaccess-ss-sub-options" <?php echo $tab_settings['enabled'] ? '' : 'style="display:none;"'; ?>>
+			<div class="htaccess-ss-ip-options htaccess-ss-sub-options" <?php echo $tab_settings['enabled'] ? '' : 'style="' . esc_attr( 'display:none;' ) . '"'; ?>>
 				<table class="form-table form-table-inner" role="presentation">
 					<tr>
 						<th scope="row">

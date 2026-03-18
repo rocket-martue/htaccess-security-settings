@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php esc_html_e( 'wp-admin に Basic 認証をかける', 'htaccess-ss' ); ?>
 			</label>
 			<p class="description"><?php esc_html_e( '管理画面へのアクセスにユーザー名・パスワードを要求します。', 'htaccess-ss' ); ?></p>
-			<div class="htaccess-ss-sub-options" <?php echo $tab_settings['basic_auth'] ? '' : 'style="display:none;"'; ?>>
+			<div class="htaccess-ss-sub-options" <?php echo $tab_settings['basic_auth'] ? '' : 'style="' . esc_attr( 'display:none;' ) . '"'; ?>>
 				<table class="form-table" role="presentation">
 					<tr>
 						<th scope="row">
@@ -53,7 +53,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php esc_html_e( 'upgrade.php へのアクセスをサーバーIPのみに制限する', 'htaccess-ss' ); ?>
 			</label>
 			<p class="description"><?php esc_html_e( 'WordPress の自動更新に必要な upgrade.php をサーバー自身のIPからのみ許可します。', 'htaccess-ss' ); ?></p>
-			<div class="htaccess-ss-sub-options" <?php echo $tab_settings['upgrade_ip_exclude'] ? '' : 'style="display:none;"'; ?>>
+			<div class="htaccess-ss-sub-options" <?php echo $tab_settings['upgrade_ip_exclude'] ? '' : 'style="' . esc_attr( 'display:none;' ) . '"'; ?>>
 				<table class="form-table" role="presentation">
 					<tr>
 						<th scope="row">
