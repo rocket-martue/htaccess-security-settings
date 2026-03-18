@@ -15,14 +15,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 class HSS_Htaccess_Builder {
 
 	/**
-	 * Htpasswd パスをサニタイズ・検証し、実パスを返す
+	 * Htpasswd パスを検証し、実パスを返す
+	 *
+	 * 設定保存時に sanitize_text_field() 済みのため、ここでは realpath() による
+	 * パス解決と存在チェックのみ行う。
 	 *
 	 * @param string $path 入力パス
 	 * @return string|false 検証済み実パス。無効なら false
 	 */
 	private function resolve_htpasswd_path( $path ) {
-		$sanitized = sanitize_text_field( $path );
-		$real_path = realpath( $sanitized );
+		if ( ! is_string( $path ) ) {
+			return false;
+		}
+		$real_path = realpath( trim( $path ) );
 		if ( ! $real_path || ! file_exists( $real_path ) || is_dir( $real_path ) ) {
 			return false;
 		}
