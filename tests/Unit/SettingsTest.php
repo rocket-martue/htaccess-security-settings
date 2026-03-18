@@ -612,6 +612,153 @@ class SettingsTest extends WP_UnitTestCase {
 	}
 
 	// =========================================================================
+	// get_presets / get_preset
+	// =========================================================================
+
+	/**
+	 * get_presets が全プリセットキーを返す
+	 */
+	public function test_get_presets_has_all_keys() {
+		$presets       = HSS_Settings::get_presets();
+		$expected_keys = array( 'recommended', 'headers_only', 'performance', 'max_security' );
+
+		foreach ( $expected_keys as $key ) {
+			$this->assertArrayHasKey( $key, $presets, "プリセット {$key} が存在しない" );
+		}
+	}
+
+	/**
+	 * 各プリセットに label, description, settings が含まれる
+	 */
+	public function test_get_presets_structure() {
+		$presets = HSS_Settings::get_presets();
+
+		foreach ( $presets as $key => $preset ) {
+			$this->assertArrayHasKey( 'label', $preset, "{$key} に label がない" );
+			$this->assertArrayHasKey( 'description', $preset, "{$key} に description がない" );
+			$this->assertArrayHasKey( 'settings', $preset, "{$key} に settings がない" );
+			$this->assertIsArray( $preset['settings'], "{$key} の settings が配列でない" );
+		}
+	}
+
+	/**
+	 * 各プリセットの settings が全タブのキーを持っている
+	 */
+	public function test_get_presets_settings_have_all_tabs() {
+		$presets = HSS_Settings::get_presets();
+
+		foreach ( $presets as $key => $preset ) {
+			foreach ( HSS_Settings::VALID_TABS as $tab ) {
+				$this->assertArrayHasKey( $tab, $preset['settings'], "プリセット {$key} にタブ {$tab} がない" );
+			}
+		}
+	}
+
+	/**
+	 * get_preset('defaults') がデフォルト設定（全 OFF）を返す
+	 */
+	public function test_get_preset_defaults_returns_all_off() {
+		$preset   = HSS_Settings::get_preset( 'defaults' );
+		$defaults = HSS_Settings::get_defaults();
+
+		$this->assertSame( $defaults, $preset );
+	}
+
+	/**
+	 * get_preset で各プリセットキーの設定値を取得できる
+	 */
+	public function test_get_preset_returns_settings() {
+		$presets = HSS_Settings::get_presets();
+
+		foreach ( array_keys( $presets ) as $key ) {
+			$preset = HSS_Settings::get_preset( $key );
+			$this->assertSame( $presets[ $key ]['settings'], $preset, "get_preset('{$key}') が正しい設定を返さない" );
+		}
+	}
+
+	/**
+	 * get_preset に存在しないキーを渡すと null が返る
+	 */
+	public function test_get_preset_invalid_key_returns_null() {
+		$this->assertNull( HSS_Settings::get_preset( 'nonexistent' ) );
+	}
+
+	/**
+	 * recommended プリセットで主要なセキュリティ項目が有効になっている
+	 */
+	public function test_preset_recommended_security_flags() {
+		$preset = HSS_Settings::get_preset( 'recommended' );
+
+		$this->assertTrue( $preset['options']['disable_multiviews'] );
+		$this->assertTrue( $preset['options']['disable_indexes'] );
+		$this->assertTrue( $preset['options']['protect_wp_config'] );
+		$this->assertTrue( $preset['rewrite']['normalize_slashes'] );
+		$this->assertTrue( $preset['rewrite']['block_bad_bots'] );
+		$this->assertTrue( $preset['headers']['hsts_enabled'] );
+		$this->assertTrue( $preset['headers']['csp_enabled'] );
+		$this->assertTrue( $preset['cache']['gzip'] );
+	}
+
+	/**
+	 * recommended プリセットで block_bad_query は無効
+	 */
+	public function test_preset_recommended_bad_query_disabled() {
+		$preset = HSS_Settings::get_preset( 'recommended' );
+
+		$this->assertFalse( $preset['rewrite']['block_bad_query'] );
+		$this->assertEmpty( $preset['rewrite']['bad_query_list'] );
+	}
+
+	/**
+	 * performance プリセットは cache タブのみ有効で options は全 OFF
+	 */
+	public function test_preset_performance_cache_only() {
+		$preset   = HSS_Settings::get_preset( 'performance' );
+		$defaults = HSS_Settings::get_defaults();
+
+		// cache タブは全て有効
+		$this->assertTrue( $preset['cache']['gzip'] );
+		$this->assertTrue( $preset['cache']['expires'] );
+		$this->assertTrue( $preset['cache']['cache_control'] );
+		$this->assertTrue( $preset['cache']['etag_disable'] );
+		$this->assertTrue( $preset['cache']['keep_alive'] );
+
+		// options タブはデフォルト（全 OFF）のまま
+		$this->assertSame( $defaults['options'], $preset['options'] );
+	}
+
+	/**
+	 * headers_only プリセットは headers タブのみ有効
+	 */
+	public function test_preset_headers_only() {
+		$preset   = HSS_Settings::get_preset( 'headers_only' );
+		$defaults = HSS_Settings::get_defaults();
+
+		// headers タブは recommended と同じ
+		$recommended = HSS_Settings::get_preset( 'recommended' );
+		$this->assertSame( $recommended['headers'], $preset['headers'] );
+
+		// 他のタブはデフォルト（全 OFF）のまま
+		$this->assertSame( $defaults['options'], $preset['options'] );
+		$this->assertSame( $defaults['cache'], $preset['cache'] );
+		$this->assertSame( $defaults['rewrite'], $preset['rewrite'] );
+	}
+
+	/**
+	 * max_security プリセットは recommended + geolocation ON
+	 */
+	public function test_preset_max_security() {
+		$preset      = HSS_Settings::get_preset( 'max_security' );
+		$recommended = HSS_Settings::get_preset( 'recommended' );
+
+		// geolocation が ON
+		$this->assertTrue( $preset['headers']['perm_geolocation'] );
+
+		// recommended では OFF
+		$this->assertFalse( $recommended['headers']['perm_geolocation'] );
+	}
+
+	// =========================================================================
 	// 定数テスト
 	// =========================================================================
 

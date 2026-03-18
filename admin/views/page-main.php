@@ -82,6 +82,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<input type="hidden" name="htaccess_ss_action" value="apply_preset" />
 				<input type="hidden" name="_tab" value="<?php echo esc_attr( $current_tab ); ?>" />
 				<?php wp_nonce_field( 'htaccess_ss_preset', 'htaccess_ss_preset_nonce' ); ?>
+				<label for="htaccess-ss-preset-select" class="screen-reader-text"><?php esc_html_e( 'プリセット選択', 'htaccess-ss' ); ?></label>
 				<select name="preset_key" id="htaccess-ss-preset-select" class="htaccess-ss-preset-select">
 					<option value=""><?php esc_html_e( '-- プリセットを選択 --', 'htaccess-ss' ); ?></option>
 					<option value="defaults"><?php esc_html_e( 'デフォルト設定に戻す（全 OFF）', 'htaccess-ss' ); ?></option>

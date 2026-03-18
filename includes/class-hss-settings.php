@@ -164,7 +164,7 @@ class HSS_Settings {
 				'block_wp_includes_dir' => true,
 				'https_redirect'        => true,
 				'x_forwarded_proto'     => true,
-				'block_bad_query'       => true,
+				'block_bad_query'       => false,
 				'bad_query_list'        => '',
 			),
 			'headers'  => array(
