@@ -31,6 +31,11 @@ class AdminPageTest extends WP_UnitTestCase {
 		parent::set_up();
 		$this->settings   = new HSS_Settings();
 		$this->admin_page = new HSS_Admin_Page( $this->settings );
+
+		delete_option( HSS_Settings::OPTION_KEY );
+		delete_option( HSS_Settings::BACKUP_ROOT_KEY );
+		delete_option( HSS_Settings::BACKUP_ADMIN_KEY );
+		delete_option( HSS_Settings::BACKUP_TIME_KEY );
 	}
 
 	/**
@@ -45,6 +50,7 @@ class AdminPageTest extends WP_UnitTestCase {
 			$_POST['htaccess_ss_delete_all_nonce'],
 			$_POST['preset_key'],
 			$_POST['_tab'],
+			$_REQUEST['nonce'],
 			$_REQUEST['_ajax_nonce']
 		);
 		parent::tear_down();
