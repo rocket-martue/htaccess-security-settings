@@ -31,7 +31,11 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 		parent::set_up();
 		$this->builder = new HSS_Htaccess_Builder();
 
-		$this->htpasswd_path = tempnam( sys_get_temp_dir(), 'htpasswd_test_' );
+		$tmp = tempnam( sys_get_temp_dir(), 'htpasswd_test_' );
+		if ( ! $tmp ) {
+			$this->fail( 'Failed to create temporary .htpasswd file.' );
+		}
+		$this->htpasswd_path = $tmp;
 		file_put_contents( $this->htpasswd_path, 'testuser:$apr1$test$hash' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 	}
 
@@ -39,7 +43,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	 * テスト後のクリーンアップ
 	 */
 	public function tear_down(): void {
-		if ( file_exists( $this->htpasswd_path ) ) {
+		if ( ! empty( $this->htpasswd_path ) && file_exists( $this->htpasswd_path ) ) {
 			unlink( $this->htpasswd_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
 		}
 		parent::tear_down();
@@ -973,6 +977,32 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 		$result = $this->builder->build_wp_admin( $settings );
 
 		$this->assertEmpty( $result );
+	}
+
+	/**
+	 * wp-admin の htpasswd_path が存在しないファイルなら空配列
+	 */
+	public function test_wp_admin_nonexistent_path_returns_empty() {
+		$settings                              = $this->get_all_off_settings();
+		$settings['wp_admin']['basic_auth']    = true;
+		$settings['wp_admin']['htpasswd_path'] = '/nonexistent/path/.htpasswd';
+
+		$result = $this->builder->build_wp_admin( $settings );
+
+		$this->assertEmpty( $result );
+	}
+
+	/**
+	 * wp-login.php の htpasswd_path が存在しないファイルなら Basic 認証が出力されない
+	 */
+	public function test_file_protection_wp_login_nonexistent_path_no_output() {
+		$settings                                   = $this->get_all_off_settings();
+		$settings['options']['wp_login_basic_auth'] = true;
+		$settings['options']['htpasswd_path']       = '/nonexistent/path/.htpasswd';
+
+		$output = $this->build_root_string( $settings );
+
+		$this->assertStringNotContainsString( 'AuthType BASIC', $output );
 	}
 
 	// =========================================================================
