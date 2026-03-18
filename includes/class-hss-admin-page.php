@@ -255,7 +255,10 @@ class HSS_Admin_Page {
 		$root_result  = $writer->write_root( $builder->build_root( $new_settings ) );
 		$admin_result = $writer->write_wp_admin( $builder->build_wp_admin( $new_settings ) );
 
-		$tab    = isset( $_POST['_tab'] ) ? sanitize_key( wp_unslash( $_POST['_tab'] ) ) : 'options';
+		$tab = isset( $_POST['_tab'] ) ? sanitize_key( wp_unslash( $_POST['_tab'] ) ) : 'options';
+		if ( ! in_array( $tab, HSS_Settings::VALID_TABS, true ) ) {
+			$tab = 'options';
+		}
 		$status = 'preset_applied';
 		if ( is_wp_error( $root_result ) ) {
 			$status = 'error_root';

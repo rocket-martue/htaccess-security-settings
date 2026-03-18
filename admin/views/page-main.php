@@ -92,7 +92,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</option>
 					<?php endforeach; ?>
 				</select>
-				<button type="submit" class="button button-primary" id="htaccess-ss-preset-btn" disabled>
+				<button type="submit" class="button button-primary" id="htaccess-ss-preset-btn">
 					<?php esc_html_e( 'プリセットを適用', 'htaccess-ss' ); ?>
 				</button>
 			</form>
