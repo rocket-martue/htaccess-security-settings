@@ -28,7 +28,7 @@ class HSS_Htaccess_Builder {
 			return false;
 		}
 		$real_path = realpath( trim( $path ) );
-		if ( ! $real_path || ! file_exists( $real_path ) || is_dir( $real_path ) ) {
+		if ( ! $real_path || ! is_file( $real_path ) || ! is_readable( $real_path ) ) {
 			return false;
 		}
 		return $real_path;
