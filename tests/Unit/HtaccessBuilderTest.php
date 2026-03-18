@@ -18,11 +18,31 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	private $builder;
 
 	/**
+	 * テスト用の一時 .htpasswd ファイルパス
+	 *
+	 * @var string
+	 */
+	private $htpasswd_path;
+
+	/**
 	 * テスト前のセットアップ
 	 */
 	public function set_up(): void {
 		parent::set_up();
 		$this->builder = new HSS_Htaccess_Builder();
+
+		$this->htpasswd_path = tempnam( sys_get_temp_dir(), 'htpasswd_test_' );
+		file_put_contents( $this->htpasswd_path, 'testuser:$apr1$test$hash' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+	}
+
+	/**
+	 * テスト後のクリーンアップ
+	 */
+	public function tear_down(): void {
+		if ( file_exists( $this->htpasswd_path ) ) {
+			unlink( $this->htpasswd_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
+		}
+		parent::tear_down();
 	}
 
 	/**
@@ -293,12 +313,13 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	public function test_file_protection_wp_login_basic_auth() {
 		$settings                                   = $this->get_all_off_settings();
 		$settings['options']['wp_login_basic_auth'] = true;
-		$settings['options']['htpasswd_path']       = '/path/to/.htpasswd';
+		$settings['options']['htpasswd_path']       = $this->htpasswd_path;
 
 		$output = $this->build_root_string( $settings );
 
+		$expected_path = realpath( $this->htpasswd_path );
 		$this->assertStringContainsString( '<Files wp-login.php>', $output );
-		$this->assertStringContainsString( 'AuthUserFile "/path/to/.htpasswd"', $output );
+		$this->assertStringContainsString( 'AuthUserFile "' . $expected_path . '"', $output );
 		$this->assertStringContainsString( 'AuthType BASIC', $output );
 		$this->assertStringContainsString( 'require valid-user', $output );
 	}
@@ -885,12 +906,13 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	public function test_wp_admin_basic_auth() {
 		$settings                              = $this->get_all_off_settings();
 		$settings['wp_admin']['basic_auth']    = true;
-		$settings['wp_admin']['htpasswd_path'] = '/path/to/.htpasswd';
+		$settings['wp_admin']['htpasswd_path'] = $this->htpasswd_path;
 
 		$result = $this->builder->build_wp_admin( $settings );
 		$output = implode( "\n", $result );
 
-		$this->assertStringContainsString( 'AuthUserFile "/path/to/.htpasswd"', $output );
+		$expected_path = realpath( $this->htpasswd_path );
+		$this->assertStringContainsString( 'AuthUserFile "' . $expected_path . '"', $output );
 		$this->assertStringContainsString( 'AuthType BASIC', $output );
 		$this->assertStringContainsString( 'require valid-user', $output );
 	}
@@ -901,7 +923,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	public function test_wp_admin_ajax_exclude() {
 		$settings                              = $this->get_all_off_settings();
 		$settings['wp_admin']['basic_auth']    = true;
-		$settings['wp_admin']['htpasswd_path'] = '/path/to/.htpasswd';
+		$settings['wp_admin']['htpasswd_path'] = $this->htpasswd_path;
 		$settings['wp_admin']['ajax_exclude']  = true;
 
 		$result = $this->builder->build_wp_admin( $settings );
@@ -917,7 +939,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	public function test_wp_admin_upgrade_ip_exclude() {
 		$settings                                   = $this->get_all_off_settings();
 		$settings['wp_admin']['basic_auth']         = true;
-		$settings['wp_admin']['htpasswd_path']      = '/path/to/.htpasswd';
+		$settings['wp_admin']['htpasswd_path']      = $this->htpasswd_path;
 		$settings['wp_admin']['upgrade_ip_exclude'] = true;
 		$settings['wp_admin']['server_ip']          = '127.0.0.1';
 
@@ -966,7 +988,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 		$settings['ip_block']['enabled']            = true;
 		$settings['ip_block']['list']               = "1.2.3.4\n5.6.7.8/24";
 		$settings['options']['wp_login_basic_auth'] = true;
-		$settings['options']['htpasswd_path']       = '/path/.htpasswd';
+		$settings['options']['htpasswd_path']       = $this->htpasswd_path;
 		$settings['rewrite']['block_bad_query']     = true;
 		$settings['rewrite']['bad_query_list']      = 'w';
 
