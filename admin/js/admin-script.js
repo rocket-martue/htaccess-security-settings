@@ -78,14 +78,30 @@
 	}
 
 	/**
-	 * Reset defaults confirmation.
+	 * Preset apply: enable button on select change and show confirm dialog.
 	 */
-	function initResetDefaults() {
-		$( '#htaccess-ss-reset-form' ).on(
+	function initPreset() {
+		const $select = $( '#htaccess-ss-preset-select' );
+		const $button = $( '#htaccess-ss-preset-btn' );
+
+		// 初期表示時：未選択ならボタンを無効化
+		$button.prop( 'disabled', $select.val() === '' );
+
+		$select.on(
+			'change',
+			function () {
+				$button.prop( 'disabled', $( this ).val() === '' );
+			}
+		);
+
+		$( '#htaccess-ss-preset-form' ).on(
 			'submit',
 			function (e) {
+				const selected = $select.find( 'option:selected' ).text();
 				/* eslint-disable-next-line no-alert */
-				if ( ! window.confirm( 'すべての設定をデフォルトに戻します。この操作は取り消せません。よろしいですか？' )) {
+				if ( ! window.confirm(
+					'「' + selected + '」を適用します。現在の設定はすべて上書きされます。よろしいですか？'
+				)) {
 					e.preventDefault();
 				}
 			}
@@ -132,7 +148,7 @@
 			initCspToggle();
 			initPermissionsToggle();
 			initRestore();
-			initResetDefaults();
+			initPreset();
 			initDownload();
 			initDeleteAll();
 		}

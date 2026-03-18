@@ -122,8 +122,8 @@ class HSS_Admin_Page {
 			$this->handle_save();
 		} elseif ( 'restore' === $action ) {
 			$this->handle_restore();
-		} elseif ( 'reset_defaults' === $action ) {
-			$this->handle_reset_defaults();
+		} elseif ( 'apply_preset' === $action ) {
+			$this->handle_apply_preset();
 		} elseif ( 'delete_all' === $action ) {
 			$this->handle_delete_all();
 		}
@@ -222,10 +222,15 @@ class HSS_Admin_Page {
 	}
 
 	/**
-	 * デフォルト設定に戻す処理
+	 * プリセット適用を処理する
 	 */
-	private function handle_reset_defaults() {
-		if ( ! isset( $_POST['htaccess_ss_reset_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['htaccess_ss_reset_nonce'] ) ), 'htaccess_ss_reset' ) ) {
+	private function handle_apply_preset() {
+		if ( ! isset( $_POST['htaccess_ss_preset_nonce'] )
+			|| ! wp_verify_nonce(
+				sanitize_key( wp_unslash( $_POST['htaccess_ss_preset_nonce'] ) ),
+				'htaccess_ss_preset'
+			)
+		) {
 			wp_die( esc_html__( '不正なリクエストです。', 'htaccess-ss' ) );
 		}
 
@@ -233,22 +238,28 @@ class HSS_Admin_Page {
 			wp_die( esc_html__( '権限がありません。', 'htaccess-ss' ) );
 		}
 
-		$tab          = isset( $_POST['_tab'] ) ? sanitize_key( wp_unslash( $_POST['_tab'] ) ) : 'options';
-		$new_settings = HSS_Settings::get_defaults();
+		$preset_key = isset( $_POST['preset_key'] )
+			? sanitize_key( wp_unslash( $_POST['preset_key'] ) )
+			: '';
+
+		$new_settings = HSS_Settings::get_preset( $preset_key );
+		if ( null === $new_settings ) {
+			wp_die( esc_html__( '無効なプリセットです。', 'htaccess-ss' ) );
+		}
 
 		$this->settings->save_settings( $new_settings );
 
 		// .htaccess 書き込み
-		$builder = new HSS_Htaccess_Builder();
-		$writer  = new HSS_Htaccess_Writer();
+		$builder      = new HSS_Htaccess_Builder();
+		$writer       = new HSS_Htaccess_Writer();
+		$root_result  = $writer->write_root( $builder->build_root( $new_settings ) );
+		$admin_result = $writer->write_wp_admin( $builder->build_wp_admin( $new_settings ) );
 
-		$root_lines  = $builder->build_root( $new_settings );
-		$root_result = $writer->write_root( $root_lines );
-
-		$admin_lines  = $builder->build_wp_admin( $new_settings );
-		$admin_result = $writer->write_wp_admin( $admin_lines );
-
-		$status = 'reset';
+		$tab = isset( $_POST['_tab'] ) ? sanitize_key( wp_unslash( $_POST['_tab'] ) ) : 'options';
+		if ( ! in_array( $tab, HSS_Settings::VALID_TABS, true ) ) {
+			$tab = 'options';
+		}
+		$status = 'preset_applied';
 		if ( is_wp_error( $root_result ) ) {
 			$status = 'error_root';
 		} elseif ( is_wp_error( $admin_result ) ) {
