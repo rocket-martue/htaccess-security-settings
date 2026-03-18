@@ -3,7 +3,7 @@ Contributors: rocketmartue
 Tags: htaccess, security, headers, csp, performance
 Requires at least: 6.0
 Tested up to: 6.8
-Stable tag: 1.2.1
+Stable tag: 1.3.0
 Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -96,6 +96,11 @@ WordPress の管理画面から .htaccess のセキュリティ設定を GUI で
 
 == Changelog ==
 
+= 1.3.0 =
+* プリセット機能を追加（おすすめ設定・セキュリティヘッダーのみ・パフォーマンス重視・最大セキュリティ）
+* 「デフォルト設定に戻す」ボタンをプリセット選択ドロップダウン＋適用ボタンに置き換え
+* `get_defaults()` を全項目 OFF のクリーンな初期状態に変更（旧デフォルト設定は「おすすめ設定」プリセットに統合）
+
 = 1.2.1 =
 * 「すべての設定を削除」実行時に .htaccess の空マーカーブロックが残る不具合を修正
 * MIME Type 定義をキャッシュ系設定が有効な場合のみ出力するように変更
@@ -124,6 +129,9 @@ WordPress の管理画面から .htaccess のセキュリティ設定を GUI で
 * 初回リリース
 
 == Upgrade Notice ==
+
+= 1.3.0 =
+プリセット機能を追加しました。「おすすめ設定」などをワンクリックで適用できます。なお `get_defaults()`（デフォルト設定）が全項目 OFF に変更されています。既存の設定には影響ありません。
 
 = 1.2.1 =
 「すべての設定を削除」時に .htaccess の空マーカーブロックが残る不具合が修正されました。

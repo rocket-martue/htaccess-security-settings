@@ -50,12 +50,95 @@ class HSS_Settings {
 	const VALID_TABS = array( 'options', 'ip_block', 'rewrite', 'headers', 'cache', 'wp_admin' );
 
 	/**
-	 * デフォルト設定を返す
+	 * デフォルト設定を返す（全項目 OFF のクリーンな初期状態）
 	 *
 	 * @return array
 	 */
 	public static function get_defaults() {
 		return array(
+			'options'  => array(
+				'disable_multiviews'  => false,
+				'disable_indexes'     => false,
+				'error_document'      => false,
+				'block_xmlrpc'        => false,
+				'protect_wp_config'   => false,
+				'protect_htaccess'    => false,
+				'block_dangerous_ext' => false,
+				'wp_login_basic_auth' => false,
+				'htpasswd_path'       => '',
+			),
+			'ip_block' => array(
+				'enabled' => false,
+				'list'    => '',
+			),
+			'rewrite'  => array(
+				'normalize_slashes'     => false,
+				'block_bad_bots'        => false,
+				'bad_bot_list'          => '',
+				'block_backdoors'       => false,
+				'backdoor_list'         => '',
+				'block_wp_nesting'      => false,
+				'block_wp_includes_dir' => false,
+				'https_redirect'        => false,
+				'x_forwarded_proto'     => false,
+				'block_bad_query'       => false,
+				'bad_query_list'        => '',
+			),
+			'headers'  => array(
+				'hsts_enabled'            => false,
+				'hsts_max_age'            => 63072000,
+				'hsts_include_subdomains' => false,
+				'hsts_preload'            => false,
+				'csp_enabled'             => false,
+				'csp_mode'                => 'enforce',
+				'csp_upgrade_insecure'    => false,
+				'csp_default_src'         => '',
+				'csp_script_src'          => '',
+				'csp_style_src'           => '',
+				'csp_img_src'             => '',
+				'csp_font_src'            => '',
+				'csp_connect_src'         => '',
+				'csp_frame_src'           => '',
+				'csp_frame_ancestors'     => '',
+				'x_content_type'          => false,
+				'x_frame_options'         => '',
+				'referrer_policy'         => '',
+				'permissions_enabled'     => false,
+				'perm_camera'             => false,
+				'perm_microphone'         => false,
+				'perm_payment'            => false,
+				'perm_usb'                => false,
+				'perm_gyroscope'          => false,
+				'perm_magnetometer'       => false,
+				'perm_geolocation'        => false,
+			),
+			'cache'    => array(
+				'gzip'          => false,
+				'expires'       => false,
+				'cache_control' => false,
+				'etag_disable'  => false,
+				'keep_alive'    => false,
+			),
+			'wp_admin' => array(
+				'basic_auth'         => false,
+				'htpasswd_path'      => '',
+				'ajax_exclude'       => false,
+				'upgrade_ip_exclude' => false,
+				'server_ip'          => '',
+			),
+		);
+	}
+
+	/**
+	 * プリセット定義を返す
+	 *
+	 * @return array キー => array( 'label' => string, 'description' => string, 'settings' => array )
+	 */
+	public static function get_presets() {
+		$defaults = self::get_defaults();
+
+		// おすすめ設定（セキュリティ・パフォーマンスのバランス設定）
+		$recommended = array(
 			'options'  => array(
 				'disable_multiviews'  => true,
 				'disable_indexes'     => true,
@@ -79,9 +162,9 @@ class HSS_Settings {
 				'backdoor_list'         => "alfa.php\nadminfuns.php\nwp-fclass.php\nwp-themes.php\nioxi-o.php\n0x.php\nakc.php\ntxets.php",
 				'block_wp_nesting'      => true,
 				'block_wp_includes_dir' => true,
-				'https_redirect'        => false,
+				'https_redirect'        => true,
 				'x_forwarded_proto'     => true,
-				'block_bad_query'       => false,
+				'block_bad_query'       => true,
 				'bad_query_list'        => '',
 			),
 			'headers'  => array(
@@ -127,6 +210,70 @@ class HSS_Settings {
 				'server_ip'          => '',
 			),
 		);
+
+		return array(
+			'recommended'  => array(
+				'label'       => __( 'おすすめ設定', 'htaccess-ss' ),
+				'description' => __( 'セキュリティとパフォーマンスのバランスが取れた推奨構成', 'htaccess-ss' ),
+				'settings'    => $recommended,
+			),
+			'headers_only' => array(
+				'label'       => __( 'セキュリティヘッダーのみ', 'htaccess-ss' ),
+				'description' => __( 'セキュリティヘッダーだけを有効にし、他の設定はすべて無効化', 'htaccess-ss' ),
+				'settings'    => array_replace_recursive(
+					$defaults,
+					array(
+						'headers' => $recommended['headers'],
+					)
+				),
+			),
+			'performance'  => array(
+				'label'       => __( 'パフォーマンス重視', 'htaccess-ss' ),
+				'description' => __( 'キャッシュ・圧縮設定のみ有効化', 'htaccess-ss' ),
+				'settings'    => array_replace_recursive(
+					$defaults,
+					array(
+						'options' => array(
+							'disable_multiviews' => true,
+							'disable_indexes'    => true,
+						),
+						'cache'   => array(
+							'gzip'          => true,
+							'expires'       => true,
+							'cache_control' => true,
+							'etag_disable'  => true,
+							'keep_alive'    => true,
+						),
+					)
+				),
+			),
+			'max_security' => array(
+				'label'       => __( '最大セキュリティ', 'htaccess-ss' ),
+				'description' => __( 'Basic 認証を除くすべてのセキュリティ項目を有効化', 'htaccess-ss' ),
+				'settings'    => array_replace_recursive(
+					$recommended,
+					array(
+						'headers' => array(
+							'perm_geolocation' => true,
+						),
+					)
+				),
+			),
+		);
+	}
+
+	/**
+	 * 指定キーのプリセット設定値を返す
+	 *
+	 * @param string $key プリセットキー（'defaults' で全 OFF のデフォルト設定を返す）
+	 * @return array|null 設定配列。存在しないキーは null
+	 */
+	public static function get_preset( $key ) {
+		if ( 'defaults' === $key ) {
+			return self::get_defaults();
+		}
+		$presets = self::get_presets();
+		return isset( $presets[ $key ] ) ? $presets[ $key ]['settings'] : null;
 	}
 
 	/**

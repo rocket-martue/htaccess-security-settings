@@ -56,9 +56,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="notice notice-error is-dismissible">
 			<p><?php esc_html_e( '.htaccess の復元に失敗しました。', 'htaccess-ss' ); ?></p>
 		</div>
-	<?php elseif ( 'reset' === $status ) : ?>
+	<?php elseif ( 'preset_applied' === $status ) : ?>
 		<div class="notice notice-success is-dismissible">
-			<p><?php esc_html_e( 'すべての設定をデフォルトに戻し、.htaccess に反映しました。', 'htaccess-ss' ); ?></p>
+			<p><?php esc_html_e( 'プリセットを適用し、.htaccess に反映しました。', 'htaccess-ss' ); ?></p>
 		</div>
 	<?php elseif ( 'deleted_all' === $status ) : ?>
 		<div class="notice notice-success is-dismissible">
@@ -78,12 +78,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php esc_html_e( '設定を保存して .htaccess に反映', 'htaccess-ss' ); ?>
 			</button>
 
-			<form method="post" action="" id="htaccess-ss-reset-form" class="htaccess-ss-action-form">
-				<input type="hidden" name="htaccess_ss_action" value="reset_defaults" />
+			<form method="post" action="" id="htaccess-ss-preset-form" class="htaccess-ss-action-form">
+				<input type="hidden" name="htaccess_ss_action" value="apply_preset" />
 				<input type="hidden" name="_tab" value="<?php echo esc_attr( $current_tab ); ?>" />
-				<?php wp_nonce_field( 'htaccess_ss_reset', 'htaccess_ss_reset_nonce' ); ?>
-				<button type="submit" class="button button-primary">
-					<?php esc_html_e( 'デフォルト設定に戻す', 'htaccess-ss' ); ?>
+				<?php wp_nonce_field( 'htaccess_ss_preset', 'htaccess_ss_preset_nonce' ); ?>
+				<select name="preset_key" id="htaccess-ss-preset-select" class="htaccess-ss-preset-select">
+					<option value=""><?php esc_html_e( '-- プリセットを選択 --', 'htaccess-ss' ); ?></option>
+					<option value="defaults"><?php esc_html_e( 'デフォルト設定に戻す（全 OFF）', 'htaccess-ss' ); ?></option>
+					<?php foreach ( HSS_Settings::get_presets() as $preset_key => $preset ) : ?>
+						<option value="<?php echo esc_attr( $preset_key ); ?>">
+							<?php echo esc_html( $preset['label'] ); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+				<button type="submit" class="button button-primary" id="htaccess-ss-preset-btn" disabled>
+					<?php esc_html_e( 'プリセットを適用', 'htaccess-ss' ); ?>
 				</button>
 			</form>
 
