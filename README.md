@@ -108,10 +108,25 @@ htaccess-security-settings/
 │       ├── tab-rewrite.php
 │       ├── tab-headers.php
 │       ├── tab-cache.php
-│       ├── tab-wp-admin.php
-│       └── partial-preview.php
+│       └── tab-wp-admin.php
+├── tests/
+│   ├── bootstrap.php
+│   └── Unit/
+│       ├── AdminPageTest.php
+│       ├── HtaccessBuilderTest.php
+│       ├── HtaccessWriterTest.php
+│       └── SettingsTest.php
+├── bin/
+│   └── install-wp-tests.sh           # テスト環境セットアップ
+├── .github/
+│   └── workflows/                    # CI（phpcs / phpunit / PHP互換性 / JS lint / ZIP ビルド）
+├── blueprint.json                    # WordPress Playground 設定
 ├── composer.json
-└── phpcs.xml
+├── package.json
+├── phpcs.xml
+├── phpunit.xml.dist
+├── readme.txt                        # WordPress.org 用 readme
+└── .wp-env.json                      # wp-env 開発環境設定
 ```
 
 ## 開発
@@ -127,10 +142,24 @@ composer phpcs
 composer phpcbf
 ```
 
-## デフォルト設定で生成される .htaccess
+## プリセット
 
-プラグインを有効化し、初期設定のまま保存した場合に `.htaccess` へ書き込まれるブロックです。  
-IP ブロック・HTTPS リダイレクト・wp-admin Basic 認証はデフォルト OFF のため含まれません。
+設定画面からワンクリックで適用できる 4 種類のプリセットを用意しています。
+
+| プリセット | 説明 |
+|---|---|
+| **おすすめ設定** | セキュリティとパフォーマンスのバランスが取れた推奨構成 |
+| **セキュリティヘッダーのみ** | セキュリティヘッダーだけを有効にし、他の設定はすべて無効化 |
+| **パフォーマンス重視** | キャッシュ・圧縮設定のみ有効化 |
+| **最大セキュリティ** | Basic 認証を除くすべてのセキュリティ項目を有効化 |
+
+> [!TIP]
+> 初期状態ではすべての設定が OFF です。まずは「おすすめ設定」プリセットを適用するのがおすすめです。
+
+## 「おすすめ設定」プリセットで生成される .htaccess
+
+「おすすめ設定」プリセットを適用した場合に `.htaccess` へ書き込まれるブロックです。  
+IP ブロック・不正クエリ文字列ブロック・wp-admin Basic 認証はプリセットに含まれないため出力されません。
 
 ```apache
 # BEGIN Htaccess Security Settings
@@ -212,6 +241,11 @@ ErrorDocument 404 default
 	RewriteCond %{REQUEST_URI} ^/wp-includes/ [NC]
 	RewriteCond %{REQUEST_FILENAME} -d
 	RewriteRule .* - [F,L]
+
+	# HTTPSリダイレクト
+	RewriteCond %{HTTPS} !=on [NC]
+	RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+	RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
 </IfModule>
 
