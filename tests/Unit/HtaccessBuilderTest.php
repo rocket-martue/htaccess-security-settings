@@ -36,7 +36,10 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 			$this->fail( 'Failed to create temporary .htpasswd file.' );
 		}
 		$this->htpasswd_path = $tmp;
-		file_put_contents( $this->htpasswd_path, 'testuser:$apr1$test$hash' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+		$written             = file_put_contents( $this->htpasswd_path, 'testuser:$apr1$test$hash' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+		if ( false === $written ) {
+			$this->fail( 'Failed to write to temporary .htpasswd file.' );
+		}
 	}
 
 	/**
