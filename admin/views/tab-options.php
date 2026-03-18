@@ -78,7 +78,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php esc_html_e( 'wp-login.php にBasic認証を追加する', 'htaccess-ss' ); ?>
 			</label>
 			<p class="description"><?php esc_html_e( 'ログインページの前にID/パスワード認証を追加し、ブルートフォース攻撃を防ぎます。', 'htaccess-ss' ); ?></p>
-			<div class="htaccess-ss-login-options htaccess-ss-sub-options" <?php echo $tab_settings['wp_login_basic_auth'] ? '' : 'style="display:none;"'; ?>>
+			<div class="htaccess-ss-login-options htaccess-ss-sub-options" <?php echo $tab_settings['wp_login_basic_auth'] ? '' : 'style="' . esc_attr( 'display:none;' ) . '"'; ?>>
 				<label for="htaccess-ss-htpasswd-path"><?php esc_html_e( '.htpasswd ファイルの絶対パス', 'htaccess-ss' ); ?></label>
 				<input type="text" id="htaccess-ss-htpasswd-path" name="htaccess_ss_settings[htpasswd_path]" value="<?php echo esc_attr( $tab_settings['htpasswd_path'] ); ?>" class="regular-text" placeholder="/home/user/domain/htpasswd/wp-admin/.htpasswd" />
 			</div>
