@@ -14,6 +14,10 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+if ( ! current_user_can( 'manage_options' ) ) {
+	wp_die( esc_html__( '権限がありません。', 'htaccess-ss' ) );
+}
 ?>
 <div class="wrap">
 	<h1><?php esc_html_e( '.htaccess セキュリティ設定', 'htaccess-ss' ); ?></h1>
