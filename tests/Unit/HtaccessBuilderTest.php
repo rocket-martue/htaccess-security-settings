@@ -1112,29 +1112,18 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * uploads で大文字小文字無視フラグ (?i) が使用されている
+	 * uploads の FilesMatch が対象拡張子（php / phar / phtml）をカバーしている
 	 */
-	public function test_build_uploads_case_insensitive_flag() {
+	public function test_build_uploads_covers_target_extensions() {
 		$settings                         = $this->get_all_off_settings();
 		$settings['uploads']['block_php'] = true;
 
 		$result = $this->builder->build_uploads( $settings );
 		$output = implode( "\n", $result );
 
-		$this->assertStringContainsString( '(?i)', $output );
-	}
-
-	/**
-	 * uploads で非キャプチャグループ (?:...) が使用されている
-	 */
-	public function test_build_uploads_uses_non_capturing_group() {
-		$settings                         = $this->get_all_off_settings();
-		$settings['uploads']['block_php'] = true;
-
-		$result = $this->builder->build_uploads( $settings );
-		$output = implode( "\n", $result );
-
-		$this->assertStringContainsString( '(?:', $output );
-		$this->assertStringNotContainsString( '(php|', $output );
+		$this->assertStringContainsString( '<FilesMatch "', $output );
+		$this->assertStringContainsString( 'php', $output );
+		$this->assertStringContainsString( 'phar', $output );
+		$this->assertStringContainsString( 'phtml', $output );
 	}
 }

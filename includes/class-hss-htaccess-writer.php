@@ -166,6 +166,21 @@ class HSS_Htaccess_Writer {
 			return new WP_Error( 'no_backup', 'バックアップが見つかりません。' );
 		}
 
+		// uploads の場合、ディレクトリが未作成なら作成を試みる。
+		$dir = dirname( $file );
+		if ( 'uploads' === $type && ! is_dir( $dir ) ) {
+			if ( ! wp_mkdir_p( $dir ) ) {
+				return new WP_Error(
+					'upload_dir_unavailable',
+					sprintf(
+						/* translators: %s: directory path */
+						'%s ディレクトリを作成できませんでした。パーミッションを確認してください。',
+						$dir
+					)
+				);
+			}
+		}
+
 		$check = $this->check_writable( $file );
 		if ( is_wp_error( $check ) ) {
 			return $check;

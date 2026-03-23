@@ -195,7 +195,7 @@ if ( ! current_user_can( 'manage_options' ) ) {
 			<?php endif; ?>
 
 			<?php if ( '' !== $uploads_htaccess ) : ?>
-				<p class="htaccess-ss-sidebar-title htaccess-ss-sidebar-title--secondary"><?php esc_html_e( 'uploads/.htaccess', 'htaccess-ss' ); ?></p>
+				<p class="htaccess-ss-sidebar-title htaccess-ss-sidebar-title--secondary"><?php esc_html_e( 'アップロードディレクトリの .htaccess', 'htaccess-ss' ); ?></p>
 				<pre class="htaccess-ss-file-content"><?php echo esc_html( $uploads_htaccess ); ?></pre>
 			<?php endif; ?>
 		</div><!-- /.htaccess-ss-file-sidebar -->
