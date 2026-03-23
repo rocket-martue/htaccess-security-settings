@@ -96,6 +96,21 @@ class HSS_Htaccess_Writer {
 			return true;
 		}
 
+		// ディレクトリが未作成の場合は作成を試みる。
+		$dir = dirname( $file );
+		if ( ! is_dir( $dir ) ) {
+			if ( ! wp_mkdir_p( $dir ) ) {
+				return new WP_Error(
+					'upload_dir_unavailable',
+					sprintf(
+						/* translators: %s: directory path */
+						'%s ディレクトリを作成できませんでした。パーミッションを確認してください。',
+						$dir
+					)
+				);
+			}
+		}
+
 		$check = $this->check_writable( $file );
 		if ( is_wp_error( $check ) ) {
 			return $check;
@@ -108,7 +123,18 @@ class HSS_Htaccess_Writer {
 		}
 
 		$result = insert_with_markers( $file, self::MARKER, $lines );
-		return $result ? true : new WP_Error( 'write_failed', 'uploads/.htaccess への書き込みに失敗しました。' );
+		if ( ! $result ) {
+			return new WP_Error(
+				'write_failed',
+				sprintf(
+					/* translators: %s: file path */
+					'アップロードディレクトリの .htaccess (%s) への書き込みに失敗しました。',
+					$file
+				)
+			);
+		}
+
+		return true;
 	}
 
 	/**

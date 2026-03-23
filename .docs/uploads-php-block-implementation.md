@@ -66,7 +66,7 @@ XServer を含む多くのレンタルサーバーは PHP-FPM を採用してい
 ```apache
 # BEGIN Htaccess Security Settings
 # PHP 関連ファイルの実行を禁止
-<FilesMatch "\.(?:php|phar|phtml)$">
+<FilesMatch "(?i)\.(?:php|phar|phtml)$">
 	<IfModule mod_authz_core.c>
 		Require all denied
 	</IfModule>
@@ -80,7 +80,7 @@ XServer を含む多くのレンタルサーバーは PHP-FPM を採用してい
 
 **設計ポイント**:
 
-- `(?:...)` 非キャプチャグループを使用（キャプチャ不要なため）
+- `(?i)` で大文字拡張子（`.PHP` / `.PHTML` 等）にも対応
 - Apache 2.4（`mod_authz_core.c`）と Apache 2.2（`!mod_authz_core.c`）の両方に対応
   - 既存の `build_deny_files_block()` と統一したパターン
 - `insert_with_markers()` により `# BEGIN / # END` マーカーブロック内に書き込み
@@ -213,7 +213,7 @@ public function build_uploads( $settings ) {
 
     $lines   = array();
     $lines[] = '# PHP 関連ファイルの実行を禁止';
-    $lines[] = '<FilesMatch "\.(?:php|phar|phtml)$">';
+    $lines[] = '<FilesMatch "(?i)\.(?:php|phar|phtml)$">';
     $lines[] = "\t" . '<IfModule mod_authz_core.c>';
     $lines[] = "\t\t" . 'Require all denied';
     $lines[] = "\t" . '</IfModule>';
@@ -235,27 +235,40 @@ public function build_uploads( $settings ) {
 
 ```php
 /**
- * uploads ディレクトリの .htaccess パスを取得する
+ * Uploads ディレクトリの .htaccess パスを取得する
  *
- * @return string
+ * @return string|WP_Error
  */
 public function get_uploads_path() {
-    $upload_dir = wp_upload_dir();
-    return $upload_dir['basedir'] . '/.htaccess';
+    $upload_dir = wp_get_upload_dir();
+
+    if ( ! empty( $upload_dir['error'] ) || empty( $upload_dir['basedir'] ) ) {
+        return new WP_Error(
+            'upload_dir_unavailable',
+            'アップロードディレクトリのパスを取得できませんでした。'
+        );
+    }
+
+    return rtrim( $upload_dir['basedir'], '/\\' ) . '/.htaccess';
 }
 ```
+
+> `wp_get_upload_dir()` はディレクトリ作成を行わない軽量版。WP 4.5+ で導入され、本プラグインの要件は WP 6.0+ なので問題なし。
 
 #### 書き込みメソッドの追加
 
 ```php
 /**
- * uploads ディレクトリの .htaccess にディレクティブを書き込む
+ * Uploads ディレクトリの .htaccess にディレクティブを書き込む
  *
  * @param array $lines 書き込む行の配列。
  * @return true|WP_Error
  */
 public function write_uploads( $lines ) {
     $file = $this->get_uploads_path();
+    if ( is_wp_error( $file ) ) {
+        return $file;
+    }
 
     if ( empty( $lines ) ) {
         if ( file_exists( $file ) ) {
@@ -263,6 +276,17 @@ public function write_uploads( $lines ) {
             return $this->remove_block( $file );
         }
         return true;
+    }
+
+    // ディレクトリが未作成の場合は作成を試みる。
+    $dir = dirname( $file );
+    if ( ! is_dir( $dir ) ) {
+        if ( ! wp_mkdir_p( $dir ) ) {
+            return new WP_Error(
+                'upload_dir_unavailable',
+                sprintf( '%s ディレクトリを作成できませんでした。パーミッションを確認してください。', $dir )
+            );
+        }
     }
 
     $check = $this->check_writable( $file );
@@ -277,9 +301,18 @@ public function write_uploads( $lines ) {
     }
 
     $result = insert_with_markers( $file, self::MARKER, $lines );
-    return $result ? true : new WP_Error( 'write_failed', 'uploads/.htaccess への書き込みに失敗しました。' );
+    if ( ! $result ) {
+        return new WP_Error(
+            'write_failed',
+            sprintf( 'アップロードディレクトリの .htaccess (%s) への書き込みに失敗しました。', $file )
+        );
+    }
+
+    return true;
 }
 ```
+
+> 書き込み時に `wp_mkdir_p()` でディレクトリ作成を保証。エラーメッセージには実際のファイルパスを含めて原因特定を容易にする。
 
 #### `backup()` メソッドに `'uploads'` type を追加
 

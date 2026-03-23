@@ -54,7 +54,7 @@ if ( ! current_user_can( 'manage_options' ) ) {
 		</div>
 	<?php elseif ( 'error_uploads' === $status ) : ?>
 		<div class="notice notice-warning is-dismissible">
-			<p><?php esc_html_e( '設定は保存されましたが、uploads/.htaccess への書き込みに失敗しました。', 'htaccess-ss' ); ?></p>
+			<p><?php esc_html_e( '設定は保存されましたが、アップロードディレクトリの .htaccess への書き込みに失敗しました。', 'htaccess-ss' ); ?></p>
 		</div>
 	<?php elseif ( 'restored' === $status ) : ?>
 		<div class="notice notice-success is-dismissible">
