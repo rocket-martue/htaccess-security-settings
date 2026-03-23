@@ -67,13 +67,18 @@
 - admin-ajax.php の認証除外（フロントエンド Ajax 対応）
 - upgrade.php のサーバー IP 制限（自動更新対応）
 
+### 7. uploads 保護
+
+- uploads ディレクトリ（wp-content/uploads）での PHP ファイル実行を禁止
+- .php / .phar / .phtml へのアクセスを 403 で拒否（Apache 2.4 / 2.2 両対応）
+- アップロードされたマルウェアの実行を防止
+
 ## その他の機能
 
-- **.htaccess プレビュー**: 保存前に生成されるディレクティブを Ajax で確認
 - **バックアップ & 復元**: 設定保存時に自動バックアップ、ワンクリックで復元
 - **安全な書き込み**: プラグインのルールは `# BEGIN WordPress` ブロックの前に配置し、RewriteRule の優先順位を確保
-- **無効化時の自動クリーンアップ**: プラグインを無効化すると `.htaccess` からプラグインブロックを自動除去（設定は保持）
-- **アンインストール時の完全削除**: プラグインを削除するとオプション・バックアップ・`.htaccess` ブロックをすべて削除
+- **セットアップウィザード設計**: プラグインを無効化・削除しても `.htaccess` のルールはそのまま残る。設定完了後は無効化したままの運用を推奨
+- **すべての設定を削除**: ルールを除去したい場合は管理画面の「すべての設定を削除」ボタンで DB 設定・バックアップ・`.htaccess` ブロックをまとめて削除
 
 ## インストール
 
@@ -105,7 +110,7 @@ htaccess-security-settings/
 │       ├── tab-headers.php
 │       ├── tab-cache.php
 │       ├── tab-wp-admin.php
-│       └── partial-preview.php
+│       └── tab-uploads.php
 ├── composer.json
 ├── .docs/　                          # ドキュメント（htaccess-security-guide.md など）
 ├── .github/                             # GitHub 関連ファイル（copilot-instructions.md など）
