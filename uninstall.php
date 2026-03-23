@@ -18,4 +18,5 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 delete_option( 'htaccess_ss_settings' );
 delete_option( 'htaccess_ss_backup_root' );
 delete_option( 'htaccess_ss_backup_admin' );
+delete_option( 'htaccess_ss_backup_uploads' );
 delete_option( 'htaccess_ss_backup_time' );

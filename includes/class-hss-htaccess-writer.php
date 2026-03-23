@@ -77,23 +77,108 @@ class HSS_Htaccess_Writer {
 	}
 
 	/**
+	 * Uploads ディレクトリの .htaccess にディレクティブを書き込む
+	 *
+	 * @param array $lines 書き込む行の配列。
+	 * @return true|WP_Error
+	 */
+	public function write_uploads( $lines ) {
+		$file = $this->get_uploads_path();
+		if ( is_wp_error( $file ) ) {
+			return $file;
+		}
+
+		if ( empty( $lines ) ) {
+			if ( file_exists( $file ) ) {
+				$this->backup( 'uploads' );
+				return $this->remove_block( $file );
+			}
+			return true;
+		}
+
+		// ディレクトリが未作成の場合は作成を試みる。
+		$dir = dirname( $file );
+		if ( ! is_dir( $dir ) ) {
+			if ( ! wp_mkdir_p( $dir ) ) {
+				return new WP_Error(
+					'upload_dir_unavailable',
+					sprintf(
+						/* translators: %s: directory path */
+						'%s ディレクトリを作成できませんでした。パーミッションを確認してください。',
+						$dir
+					)
+				);
+			}
+		}
+
+		$check = $this->check_writable( $file );
+		if ( is_wp_error( $check ) ) {
+			return $check;
+		}
+
+		$this->backup( 'uploads' );
+
+		if ( ! function_exists( 'insert_with_markers' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/misc.php';
+		}
+
+		$result = insert_with_markers( $file, self::MARKER, $lines );
+		if ( ! $result ) {
+			return new WP_Error(
+				'write_failed',
+				sprintf(
+					/* translators: %s: file path */
+					'アップロードディレクトリの .htaccess (%s) への書き込みに失敗しました。',
+					$file
+				)
+			);
+		}
+
+		return true;
+	}
+
+	/**
 	 * バックアップから .htaccess を復元する
 	 *
-	 * @param string $type 'root' または 'admin'
+	 * @param string $type 'root', 'admin', または 'uploads'。
 	 * @return true|WP_Error
 	 */
 	public function restore( $type ) {
 		if ( 'root' === $type ) {
 			$file       = $this->get_root_path();
 			$option_key = HSS_Settings::BACKUP_ROOT_KEY;
-		} else {
+		} elseif ( 'admin' === $type ) {
 			$file       = $this->get_wp_admin_path();
 			$option_key = HSS_Settings::BACKUP_ADMIN_KEY;
+		} elseif ( 'uploads' === $type ) {
+			$file       = $this->get_uploads_path();
+			$option_key = HSS_Settings::BACKUP_UPLOADS_KEY;
+		} else {
+			return new WP_Error( 'invalid_type', '無効なバックアップタイプです。' );
+		}
+
+		if ( is_wp_error( $file ) ) {
+			return $file;
 		}
 
 		$backup = get_option( $option_key );
 		if ( false === $backup ) {
 			return new WP_Error( 'no_backup', 'バックアップが見つかりません。' );
+		}
+
+		// uploads の場合、ディレクトリが未作成なら作成を試みる。
+		$dir = dirname( $file );
+		if ( 'uploads' === $type && ! is_dir( $dir ) ) {
+			if ( ! wp_mkdir_p( $dir ) ) {
+				return new WP_Error(
+					'upload_dir_unavailable',
+					sprintf(
+						/* translators: %s: directory path */
+						'%s ディレクトリを作成できませんでした。パーミッションを確認してください。',
+						$dir
+					)
+				);
+			}
 		}
 
 		$check = $this->check_writable( $file );
@@ -109,15 +194,24 @@ class HSS_Htaccess_Writer {
 	/**
 	 * 現在の .htaccess をバックアップする
 	 *
-	 * @param string $type 'root' または 'admin'
+	 * @param string $type 'root', 'admin', または 'uploads'。
 	 */
 	public function backup( $type ) {
 		if ( 'root' === $type ) {
 			$file       = $this->get_root_path();
 			$option_key = HSS_Settings::BACKUP_ROOT_KEY;
-		} else {
+		} elseif ( 'admin' === $type ) {
 			$file       = $this->get_wp_admin_path();
 			$option_key = HSS_Settings::BACKUP_ADMIN_KEY;
+		} elseif ( 'uploads' === $type ) {
+			$file       = $this->get_uploads_path();
+			$option_key = HSS_Settings::BACKUP_UPLOADS_KEY;
+		} else {
+			return;
+		}
+
+		if ( is_wp_error( $file ) ) {
+			return;
 		}
 
 		if ( file_exists( $file ) ) {
@@ -153,6 +247,24 @@ class HSS_Htaccess_Writer {
 	 */
 	public function get_wp_admin_path() {
 		return ABSPATH . 'wp-admin/.htaccess';
+	}
+
+	/**
+	 * Uploads ディレクトリの .htaccess パスを取得する
+	 *
+	 * @return string|WP_Error
+	 */
+	public function get_uploads_path() {
+		$upload_dir = wp_get_upload_dir();
+
+		if ( ! empty( $upload_dir['error'] ) || empty( $upload_dir['basedir'] ) ) {
+			return new WP_Error(
+				'upload_dir_unavailable',
+				'アップロードディレクトリのパスを取得できませんでした。'
+			);
+		}
+
+		return rtrim( $upload_dir['basedir'], '/\\' ) . '/.htaccess';
 	}
 
 	/**

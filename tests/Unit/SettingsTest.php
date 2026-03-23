@@ -770,9 +770,66 @@ class SettingsTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * VALID_TABS が 6 タブ分ある
+	 * VALID_TABS が 7 タブ分ある
 	 */
 	public function test_valid_tabs_count() {
-		$this->assertCount( 6, HSS_Settings::VALID_TABS );
+		$this->assertCount( 7, HSS_Settings::VALID_TABS );
+	}
+
+	// =========================================================================
+	// uploads タブ
+	// =========================================================================
+
+	/**
+	 * デフォルトの uploads タブに block_php キーがある
+	 */
+	public function test_get_defaults_uploads_keys() {
+		$defaults = HSS_Settings::get_defaults();
+
+		$this->assertArrayHasKey( 'uploads', $defaults );
+		$this->assertArrayHasKey( 'block_php', $defaults['uploads'] );
+		$this->assertFalse( $defaults['uploads']['block_php'] );
+	}
+
+	/**
+	 * uploads タブのサニタイズでチェックボックスが正しく処理される
+	 */
+	public function test_sanitize_uploads_tab() {
+		$input = array(
+			'block_php' => '1',
+		);
+
+		$result = $this->settings->sanitize_and_merge( $input, 'uploads' );
+
+		$this->assertTrue( $result['uploads']['block_php'] );
+	}
+
+	/**
+	 * uploads タブのサニタイズで未チェック時は false
+	 */
+	public function test_sanitize_uploads_tab_unchecked() {
+		$input = array(
+			'htaccess_ss_settings' => array(),
+		);
+
+		$result = $this->settings->sanitize_and_merge( $input['htaccess_ss_settings'], 'uploads' );
+
+		$this->assertFalse( $result['uploads']['block_php'] );
+	}
+
+	/**
+	 * recommended プリセットで uploads の block_php が有効
+	 */
+	public function test_preset_recommended_uploads_block_php() {
+		$preset = HSS_Settings::get_preset( 'recommended' );
+
+		$this->assertTrue( $preset['uploads']['block_php'] );
+	}
+
+	/**
+	 * BACKUP_UPLOADS_KEY 定数が正しい値を持っている
+	 */
+	public function test_backup_uploads_key_constant() {
+		$this->assertSame( 'htaccess_ss_backup_uploads', HSS_Settings::BACKUP_UPLOADS_KEY );
 	}
 }

@@ -139,6 +139,9 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 				'upgrade_ip_exclude' => false,
 				'server_ip'          => '',
 			),
+			'uploads'  => array(
+				'block_php' => false,
+			),
 		);
 	}
 
@@ -1061,5 +1064,66 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 		$this->assertStringContainsString( '# Rewrite Rules', $output );
 		$this->assertStringContainsString( '# Cache & Performance Settings', $output );
 		$this->assertStringContainsString( '# Security Response Headers', $output );
+	}
+
+	// =========================================================================
+	// build_uploads テスト
+	// =========================================================================
+
+	/**
+	 * uploads block_php 有効時に FilesMatch が出力される
+	 */
+	public function test_build_uploads_enabled() {
+		$settings                         = $this->get_all_off_settings();
+		$settings['uploads']['block_php'] = true;
+
+		$result = $this->builder->build_uploads( $settings );
+		$output = implode( "\n", $result );
+
+		$this->assertNotEmpty( $result );
+		$this->assertStringContainsString( '<FilesMatch "(?i)\.(?:php|phar|phtml)$">', $output );
+		$this->assertStringContainsString( 'Require all denied', $output );
+	}
+
+	/**
+	 * uploads block_php 有効時に Apache 2.2 フォールバックが含まれる
+	 */
+	public function test_build_uploads_has_legacy_fallback() {
+		$settings                         = $this->get_all_off_settings();
+		$settings['uploads']['block_php'] = true;
+
+		$result = $this->builder->build_uploads( $settings );
+		$output = implode( "\n", $result );
+
+		$this->assertStringContainsString( '<IfModule !mod_authz_core.c>', $output );
+		$this->assertStringContainsString( 'Deny from all', $output );
+	}
+
+	/**
+	 * uploads block_php 無効時は空配列を返す
+	 */
+	public function test_build_uploads_disabled_returns_empty() {
+		$settings                         = $this->get_all_off_settings();
+		$settings['uploads']['block_php'] = false;
+
+		$result = $this->builder->build_uploads( $settings );
+
+		$this->assertSame( array(), $result );
+	}
+
+	/**
+	 * uploads の FilesMatch が対象拡張子（php / phar / phtml）をカバーしている
+	 */
+	public function test_build_uploads_covers_target_extensions() {
+		$settings                         = $this->get_all_off_settings();
+		$settings['uploads']['block_php'] = true;
+
+		$result = $this->builder->build_uploads( $settings );
+		$output = implode( "\n", $result );
+
+		$this->assertStringContainsString( '<FilesMatch "', $output );
+		$this->assertStringContainsString( 'php', $output );
+		$this->assertStringContainsString( 'phar', $output );
+		$this->assertStringContainsString( 'phtml', $output );
 	}
 }
