@@ -3,7 +3,7 @@ Contributors: rocketmartue
 Tags: htaccess, security, headers, csp, performance
 Requires at least: 6.0
 Tested up to: 6.8
-Stable tag: 1.3.1
+Stable tag: 1.4.0
 Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -96,6 +96,13 @@ WordPress の管理画面から .htaccess のセキュリティ設定を GUI で
 
 == Changelog ==
 
+= 1.4.0 =
+* uploads ディレクトリ（wp-content/uploads）の PHP 実行をブロックする「uploads 保護」タブを追加
+* uploads/.htaccess に php / phar / phtml の実行を禁止する FilesMatch ディレクティブを生成（Apache 2.4 / 2.2 両対応）
+* uploads/.htaccess のバックアップ・復元に対応
+* プリセット「おすすめ設定」「最大セキュリティ」に uploads 保護を追加
+* アンインストール時に uploads 用バックアップオプションも削除するよう対応
+
 = 1.3.1 =
 * `handle_form_submission()` の入口に早期権限チェックを追加（多層防御の強化）
 * ビューテンプレート `page-main.php` にフェイルセーフとして権限チェックを追加
@@ -136,6 +143,9 @@ WordPress の管理画面から .htaccess のセキュリティ設定を GUI で
 * 初回リリース
 
 == Upgrade Notice ==
+
+= 1.4.0 =
+uploads ディレクトリの PHP 実行ブロック機能を追加しました。「uploads 保護」タブからワンクリックで有効化できます。
 
 = 1.3.0 =
 プリセット機能を追加しました。「おすすめ設定」などをワンクリックで適用できます。なお `get_defaults()`（デフォルト設定）が全項目 OFF に変更されています。既存の設定には影響ありません。
