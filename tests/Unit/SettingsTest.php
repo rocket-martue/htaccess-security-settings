@@ -796,20 +796,10 @@ class SettingsTest extends WP_UnitTestCase {
 	 */
 	public function test_sanitize_uploads_tab() {
 		$input = array(
-			'htaccess_ss_settings' => array(
-				'block_php' => '1',
-			),
+			'block_php' => '1',
 		);
 
-		$_POST = array_merge(
-			$input,
-			array(
-				'htaccess_ss_action' => 'save',
-				'_tab'               => 'uploads',
-			)
-		);
-
-		$result = $this->settings->sanitize_and_merge( $input['htaccess_ss_settings'], 'uploads' );
+		$result = $this->settings->sanitize_and_merge( $input, 'uploads' );
 
 		$this->assertTrue( $result['uploads']['block_php'] );
 	}

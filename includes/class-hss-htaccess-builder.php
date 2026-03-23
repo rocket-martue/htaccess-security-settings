@@ -160,7 +160,7 @@ class HSS_Htaccess_Builder {
 
 		$lines   = array();
 		$lines[] = '# PHP 関連ファイルの実行を禁止';
-		$lines[] = '<FilesMatch "\.(?:php|phar|phtml)$">';
+		$lines[] = '<FilesMatch "(?i)\.(?:php|phar|phtml)$">';
 		$lines[] = "\t" . '<IfModule mod_authz_core.c>';
 		$lines[] = "\t\t" . 'Require all denied';
 		$lines[] = "\t" . '</IfModule>';

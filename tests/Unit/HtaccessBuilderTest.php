@@ -1081,7 +1081,7 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 		$output = implode( "\n", $result );
 
 		$this->assertNotEmpty( $result );
-		$this->assertStringContainsString( '<FilesMatch "\.(?:php|phar|phtml)$">', $output );
+		$this->assertStringContainsString( '<FilesMatch "(?i)\.(?:php|phar|phtml)$">', $output );
 		$this->assertStringContainsString( 'Require all denied', $output );
 	}
 
@@ -1109,6 +1109,19 @@ class HtaccessBuilderTest extends WP_UnitTestCase {
 		$result = $this->builder->build_uploads( $settings );
 
 		$this->assertSame( array(), $result );
+	}
+
+	/**
+	 * uploads で大文字小文字無視フラグ (?i) が使用されている
+	 */
+	public function test_build_uploads_case_insensitive_flag() {
+		$settings                         = $this->get_all_off_settings();
+		$settings['uploads']['block_php'] = true;
+
+		$result = $this->builder->build_uploads( $settings );
+		$output = implode( "\n", $result );
+
+		$this->assertStringContainsString( '(?i)', $output );
 	}
 
 	/**

@@ -84,6 +84,9 @@ class HSS_Htaccess_Writer {
 	 */
 	public function write_uploads( $lines ) {
 		$file = $this->get_uploads_path();
+		if ( is_wp_error( $file ) ) {
+			return $file;
+		}
 
 		if ( empty( $lines ) ) {
 			if ( file_exists( $file ) ) {
@@ -128,6 +131,10 @@ class HSS_Htaccess_Writer {
 			return new WP_Error( 'invalid_type', '無効なバックアップタイプです。' );
 		}
 
+		if ( is_wp_error( $file ) ) {
+			return $file;
+		}
+
 		$backup = get_option( $option_key );
 		if ( false === $backup ) {
 			return new WP_Error( 'no_backup', 'バックアップが見つかりません。' );
@@ -159,6 +166,10 @@ class HSS_Htaccess_Writer {
 			$file       = $this->get_uploads_path();
 			$option_key = HSS_Settings::BACKUP_UPLOADS_KEY;
 		} else {
+			return;
+		}
+
+		if ( is_wp_error( $file ) ) {
 			return;
 		}
 
@@ -200,11 +211,19 @@ class HSS_Htaccess_Writer {
 	/**
 	 * Uploads ディレクトリの .htaccess パスを取得する
 	 *
-	 * @return string
+	 * @return string|WP_Error
 	 */
 	public function get_uploads_path() {
-		$upload_dir = wp_upload_dir();
-		return $upload_dir['basedir'] . '/.htaccess';
+		$upload_dir = wp_get_upload_dir();
+
+		if ( ! empty( $upload_dir['error'] ) || empty( $upload_dir['basedir'] ) ) {
+			return new WP_Error(
+				'upload_dir_unavailable',
+				'アップロードディレクトリのパスを取得できませんでした。'
+			);
+		}
+
+		return rtrim( $upload_dir['basedir'], '/\\' ) . '/.htaccess';
 	}
 
 	/**

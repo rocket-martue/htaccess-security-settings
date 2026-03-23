@@ -217,6 +217,10 @@ class HSS_Admin_Page {
 		$status = 'restored';
 		if ( is_wp_error( $root_result ) && 'no_backup' !== $root_result->get_error_code() ) {
 			$status = 'restore_error';
+		} elseif ( is_wp_error( $admin_result ) && 'no_backup' !== $admin_result->get_error_code() ) {
+			$status = 'restore_error';
+		} elseif ( is_wp_error( $uploads_result ) && 'no_backup' !== $uploads_result->get_error_code() ) {
+			$status = 'restore_error';
 		}
 
 		wp_safe_redirect(
@@ -393,8 +397,11 @@ class HSS_Admin_Page {
 		$admin_htaccess = file_exists( $admin_htaccess_path ) ? file_get_contents( $admin_htaccess_path ) : '';
 
 		$uploads_htaccess_path = $writer->get_uploads_path();
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-		$uploads_htaccess = file_exists( $uploads_htaccess_path ) ? file_get_contents( $uploads_htaccess_path ) : '';
+		$uploads_htaccess      = '';
+		if ( ! is_wp_error( $uploads_htaccess_path ) && file_exists( $uploads_htaccess_path ) ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+			$uploads_htaccess = file_get_contents( $uploads_htaccess_path );
+		}
 
 		// ステータスメッセージ
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- 表示用の status パラメータのみ
