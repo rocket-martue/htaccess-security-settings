@@ -36,6 +36,13 @@ class HSS_Settings {
 	const BACKUP_ADMIN_KEY = 'htaccess_ss_backup_admin';
 
 	/**
+	 * バックアップ用オプションキー（uploads .htaccess）
+	 *
+	 * @var string
+	 */
+	const BACKUP_UPLOADS_KEY = 'htaccess_ss_backup_uploads';
+
+	/**
 	 * バックアップ日時用オプションキー
 	 *
 	 * @var string
@@ -47,7 +54,7 @@ class HSS_Settings {
 	 *
 	 * @var array
 	 */
-	const VALID_TABS = array( 'options', 'ip_block', 'rewrite', 'headers', 'cache', 'wp_admin' );
+	const VALID_TABS = array( 'options', 'ip_block', 'rewrite', 'headers', 'cache', 'wp_admin', 'uploads' );
 
 	/**
 	 * デフォルト設定を返す（全項目 OFF のクリーンな初期状態）
@@ -125,6 +132,9 @@ class HSS_Settings {
 				'ajax_exclude'       => false,
 				'upgrade_ip_exclude' => false,
 				'server_ip'          => '',
+			),
+			'uploads'  => array(
+				'block_php' => false,
 			),
 		);
 	}
@@ -208,6 +218,9 @@ class HSS_Settings {
 				'ajax_exclude'       => true,
 				'upgrade_ip_exclude' => true,
 				'server_ip'          => '',
+			),
+			'uploads'  => array(
+				'block_php' => true,
 			),
 		);
 
@@ -335,6 +348,9 @@ class HSS_Settings {
 				break;
 			case 'wp_admin':
 				$current['wp_admin'] = $this->sanitize_wp_admin_tab( $input );
+				break;
+			case 'uploads':
+				$current['uploads'] = $this->sanitize_uploads_tab( $input );
 				break;
 		}
 
@@ -516,6 +532,18 @@ class HSS_Settings {
 			'ajax_exclude'       => ! empty( $input['ajax_exclude'] ),
 			'upgrade_ip_exclude' => ! empty( $input['upgrade_ip_exclude'] ),
 			'server_ip'          => $server_ip,
+		);
+	}
+
+	/**
+	 * Uploads タブのサニタイズ
+	 *
+	 * @param array $input POST データ。
+	 * @return array
+	 */
+	private function sanitize_uploads_tab( $input ) {
+		return array(
+			'block_php' => ! empty( $input['block_php'] ),
 		);
 	}
 

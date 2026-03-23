@@ -52,6 +52,10 @@ if ( ! current_user_can( 'manage_options' ) ) {
 		<div class="notice notice-warning is-dismissible">
 			<p><?php esc_html_e( '設定は保存されましたが、wp-admin/.htaccess への書き込みに失敗しました。', 'htaccess-ss' ); ?></p>
 		</div>
+	<?php elseif ( 'error_uploads' === $status ) : ?>
+		<div class="notice notice-warning is-dismissible">
+			<p><?php esc_html_e( '設定は保存されましたが、uploads/.htaccess への書き込みに失敗しました。', 'htaccess-ss' ); ?></p>
+		</div>
 	<?php elseif ( 'restored' === $status ) : ?>
 		<div class="notice notice-success is-dismissible">
 			<p><?php esc_html_e( 'バックアップから .htaccess を復元しました。', 'htaccess-ss' ); ?></p>
@@ -188,6 +192,11 @@ if ( ! current_user_can( 'manage_options' ) ) {
 			<?php if ( '' !== $admin_htaccess ) : ?>
 				<p class="htaccess-ss-sidebar-title htaccess-ss-sidebar-title--secondary"><?php esc_html_e( 'wp-admin/.htaccess', 'htaccess-ss' ); ?></p>
 				<pre class="htaccess-ss-file-content"><?php echo esc_html( $admin_htaccess ); ?></pre>
+			<?php endif; ?>
+
+			<?php if ( '' !== $uploads_htaccess ) : ?>
+				<p class="htaccess-ss-sidebar-title htaccess-ss-sidebar-title--secondary"><?php esc_html_e( 'uploads/.htaccess', 'htaccess-ss' ); ?></p>
+				<pre class="htaccess-ss-file-content"><?php echo esc_html( $uploads_htaccess ); ?></pre>
 			<?php endif; ?>
 		</div><!-- /.htaccess-ss-file-sidebar -->
 

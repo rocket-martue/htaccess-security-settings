@@ -146,6 +146,34 @@ class HSS_Htaccess_Builder {
 	}
 
 	/**
+	 * Uploads ディレクトリ用 .htaccess ディレクティブを生成する
+	 *
+	 * @param array $settings 全設定配列。
+	 * @return array 行の配列。
+	 */
+	public function build_uploads( $settings ) {
+		$uploads = $settings['uploads'];
+
+		if ( ! $uploads['block_php'] ) {
+			return array();
+		}
+
+		$lines   = array();
+		$lines[] = '# PHP 関連ファイルの実行を禁止';
+		$lines[] = '<FilesMatch "\.(?:php|phar|phtml)$">';
+		$lines[] = "\t" . '<IfModule mod_authz_core.c>';
+		$lines[] = "\t\t" . 'Require all denied';
+		$lines[] = "\t" . '</IfModule>';
+		$lines[] = "\t" . '<IfModule !mod_authz_core.c>';
+		$lines[] = "\t\t" . 'Order deny,allow';
+		$lines[] = "\t\t" . 'Deny from all';
+		$lines[] = "\t" . '</IfModule>';
+		$lines[] = '</FilesMatch>';
+
+		return $lines;
+	}
+
+	/**
 	 * Options セクション（Options ディレクティブ + ErrorDocument）を生成する
 	 *
 	 * @param array $options options 設定

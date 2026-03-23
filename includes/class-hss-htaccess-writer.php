@@ -77,18 +77,55 @@ class HSS_Htaccess_Writer {
 	}
 
 	/**
+	 * Uploads ディレクトリの .htaccess にディレクティブを書き込む
+	 *
+	 * @param array $lines 書き込む行の配列。
+	 * @return true|WP_Error
+	 */
+	public function write_uploads( $lines ) {
+		$file = $this->get_uploads_path();
+
+		if ( empty( $lines ) ) {
+			if ( file_exists( $file ) ) {
+				$this->backup( 'uploads' );
+				return $this->remove_block( $file );
+			}
+			return true;
+		}
+
+		$check = $this->check_writable( $file );
+		if ( is_wp_error( $check ) ) {
+			return $check;
+		}
+
+		$this->backup( 'uploads' );
+
+		if ( ! function_exists( 'insert_with_markers' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/misc.php';
+		}
+
+		$result = insert_with_markers( $file, self::MARKER, $lines );
+		return $result ? true : new WP_Error( 'write_failed', 'uploads/.htaccess への書き込みに失敗しました。' );
+	}
+
+	/**
 	 * バックアップから .htaccess を復元する
 	 *
-	 * @param string $type 'root' または 'admin'
+	 * @param string $type 'root', 'admin', または 'uploads'。
 	 * @return true|WP_Error
 	 */
 	public function restore( $type ) {
 		if ( 'root' === $type ) {
 			$file       = $this->get_root_path();
 			$option_key = HSS_Settings::BACKUP_ROOT_KEY;
-		} else {
+		} elseif ( 'admin' === $type ) {
 			$file       = $this->get_wp_admin_path();
 			$option_key = HSS_Settings::BACKUP_ADMIN_KEY;
+		} elseif ( 'uploads' === $type ) {
+			$file       = $this->get_uploads_path();
+			$option_key = HSS_Settings::BACKUP_UPLOADS_KEY;
+		} else {
+			return new WP_Error( 'invalid_type', '無効なバックアップタイプです。' );
 		}
 
 		$backup = get_option( $option_key );
@@ -109,15 +146,20 @@ class HSS_Htaccess_Writer {
 	/**
 	 * 現在の .htaccess をバックアップする
 	 *
-	 * @param string $type 'root' または 'admin'
+	 * @param string $type 'root', 'admin', または 'uploads'。
 	 */
 	public function backup( $type ) {
 		if ( 'root' === $type ) {
 			$file       = $this->get_root_path();
 			$option_key = HSS_Settings::BACKUP_ROOT_KEY;
-		} else {
+		} elseif ( 'admin' === $type ) {
 			$file       = $this->get_wp_admin_path();
 			$option_key = HSS_Settings::BACKUP_ADMIN_KEY;
+		} elseif ( 'uploads' === $type ) {
+			$file       = $this->get_uploads_path();
+			$option_key = HSS_Settings::BACKUP_UPLOADS_KEY;
+		} else {
+			return;
 		}
 
 		if ( file_exists( $file ) ) {
@@ -153,6 +195,16 @@ class HSS_Htaccess_Writer {
 	 */
 	public function get_wp_admin_path() {
 		return ABSPATH . 'wp-admin/.htaccess';
+	}
+
+	/**
+	 * Uploads ディレクトリの .htaccess パスを取得する
+	 *
+	 * @return string
+	 */
+	public function get_uploads_path() {
+		$upload_dir = wp_upload_dir();
+		return $upload_dir['basedir'] . '/.htaccess';
 	}
 
 	/**

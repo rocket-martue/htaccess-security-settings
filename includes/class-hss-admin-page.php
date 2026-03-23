@@ -49,6 +49,7 @@ class HSS_Admin_Page {
 			'headers'  => 'セキュリティヘッダー',
 			'cache'    => 'キャッシュ',
 			'wp_admin' => 'wp-admin 保護',
+			'uploads'  => 'uploads 保護',
 		);
 
 		add_action( 'admin_menu', array( $this, 'add_menu_page' ) );
@@ -168,12 +169,17 @@ class HSS_Admin_Page {
 		$admin_lines  = $builder->build_wp_admin( $new_settings );
 		$admin_result = $writer->write_wp_admin( $admin_lines );
 
+		$uploads_lines  = $builder->build_uploads( $new_settings );
+		$uploads_result = $writer->write_uploads( $uploads_lines );
+
 		// リダイレクト
 		$status = 'saved';
 		if ( is_wp_error( $root_result ) ) {
 			$status = 'error_root';
 		} elseif ( is_wp_error( $admin_result ) ) {
 			$status = 'error_admin';
+		} elseif ( is_wp_error( $uploads_result ) ) {
+			$status = 'error_uploads';
 		}
 
 		wp_safe_redirect(
@@ -204,8 +210,9 @@ class HSS_Admin_Page {
 		$tab    = isset( $_POST['_tab'] ) ? sanitize_key( wp_unslash( $_POST['_tab'] ) ) : 'options';
 		$writer = new HSS_Htaccess_Writer();
 
-		$root_result  = $writer->restore( 'root' );
-		$admin_result = $writer->restore( 'admin' );
+		$root_result    = $writer->restore( 'root' );
+		$admin_result   = $writer->restore( 'admin' );
+		$uploads_result = $writer->restore( 'uploads' );
 
 		$status = 'restored';
 		if ( is_wp_error( $root_result ) && 'no_backup' !== $root_result->get_error_code() ) {
@@ -254,10 +261,11 @@ class HSS_Admin_Page {
 		$this->settings->save_settings( $new_settings );
 
 		// .htaccess 書き込み
-		$builder      = new HSS_Htaccess_Builder();
-		$writer       = new HSS_Htaccess_Writer();
-		$root_result  = $writer->write_root( $builder->build_root( $new_settings ) );
-		$admin_result = $writer->write_wp_admin( $builder->build_wp_admin( $new_settings ) );
+		$builder        = new HSS_Htaccess_Builder();
+		$writer         = new HSS_Htaccess_Writer();
+		$root_result    = $writer->write_root( $builder->build_root( $new_settings ) );
+		$admin_result   = $writer->write_wp_admin( $builder->build_wp_admin( $new_settings ) );
+		$uploads_result = $writer->write_uploads( $builder->build_uploads( $new_settings ) );
 
 		$tab = isset( $_POST['_tab'] ) ? sanitize_key( wp_unslash( $_POST['_tab'] ) ) : 'options';
 		if ( ! in_array( $tab, HSS_Settings::VALID_TABS, true ) ) {
@@ -268,6 +276,8 @@ class HSS_Admin_Page {
 			$status = 'error_root';
 		} elseif ( is_wp_error( $admin_result ) ) {
 			$status = 'error_admin';
+		} elseif ( is_wp_error( $uploads_result ) ) {
+			$status = 'error_uploads';
 		}
 
 		wp_safe_redirect(
@@ -296,14 +306,16 @@ class HSS_Admin_Page {
 		}
 
 		// .htaccess からプラグインブロックを除去（backup() が先に走るので DB 削除より前に実行）
-		$writer       = new HSS_Htaccess_Writer();
-		$root_result  = $writer->write_root( array() );
-		$admin_result = $writer->write_wp_admin( array() );
+		$writer         = new HSS_Htaccess_Writer();
+		$root_result    = $writer->write_root( array() );
+		$admin_result   = $writer->write_wp_admin( array() );
+		$uploads_result = $writer->write_uploads( array() );
 
 		// DB からすべてのオプションを削除
 		delete_option( HSS_Settings::OPTION_KEY );
 		delete_option( HSS_Settings::BACKUP_ROOT_KEY );
 		delete_option( HSS_Settings::BACKUP_ADMIN_KEY );
+		delete_option( HSS_Settings::BACKUP_UPLOADS_KEY );
 		delete_option( HSS_Settings::BACKUP_TIME_KEY );
 
 		$status = 'deleted_all';
@@ -311,6 +323,8 @@ class HSS_Admin_Page {
 			$status = 'error_root';
 		} elseif ( is_wp_error( $admin_result ) ) {
 			$status = 'error_admin';
+		} elseif ( is_wp_error( $uploads_result ) ) {
+			$status = 'error_uploads';
 		}
 
 		wp_safe_redirect(
@@ -377,6 +391,10 @@ class HSS_Admin_Page {
 		$admin_htaccess_path = $writer->get_wp_admin_path();
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		$admin_htaccess = file_exists( $admin_htaccess_path ) ? file_get_contents( $admin_htaccess_path ) : '';
+
+		$uploads_htaccess_path = $writer->get_uploads_path();
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$uploads_htaccess = file_exists( $uploads_htaccess_path ) ? file_get_contents( $uploads_htaccess_path ) : '';
 
 		// ステータスメッセージ
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- 表示用の status パラメータのみ
