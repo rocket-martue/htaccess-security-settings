@@ -31,6 +31,10 @@ class HSS_Htaccess_Builder {
 		if ( ! $real_path || ! is_file( $real_path ) || ! is_readable( $real_path ) ) {
 			return false;
 		}
+		// .htaccess の AuthUserFile ディレクティブで引用符を破壊されないよう "" を除去する
+		if ( false !== strpos( $real_path, '"' ) ) {
+			return false;
+		}
 		return $real_path;
 	}
 
@@ -330,12 +334,7 @@ class HSS_Htaccess_Builder {
 		if ( $rewrite['block_backdoors'] && ! empty( $rewrite['backdoor_list'] ) ) {
 			$files = array_filter( array_map( 'trim', explode( "\n", $rewrite['backdoor_list'] ) ) );
 			if ( ! empty( $files ) ) {
-				$escaped = array_map(
-					function ( $f ) {
-						return str_replace( '.', '\\.', $f );
-					},
-					$files
-				);
+				$escaped = array_map( 'preg_quote', $files );
 				$rules[] = '';
 				$rules[] = "\t" . '# バックドア/マルウェア探索をブロック';
 				$rules[] = "\t" . 'RewriteCond %{REQUEST_URI} (' . implode( '|', $escaped ) . ') [NC]';
@@ -574,17 +573,21 @@ class HSS_Htaccess_Builder {
 				$csp_parts[] = 'upgrade-insecure-requests';
 			}
 
-			$csp_value = implode( '; ', $csp_parts ) . ';';
-
-			if ( 'report-only' === $headers['csp_mode'] ) {
-				$header_name = 'Content-Security-Policy-Report-Only';
+			if ( empty( $csp_parts ) ) {
+				// ディレクティブが1つも指定されていない場合は CSP ヘッダーを出力しない
 			} else {
-				$header_name = 'Content-Security-Policy';
-			}
+				$csp_value = implode( '; ', $csp_parts ) . ';';
 
-			$directives[] = '';
-			$directives[] = "\t" . '# CSP';
-			$directives[] = "\t" . 'Header always set ' . $header_name . ' "' . $csp_value . '"';
+				if ( 'report-only' === $headers['csp_mode'] ) {
+					$header_name = 'Content-Security-Policy-Report-Only';
+				} else {
+					$header_name = 'Content-Security-Policy';
+				}
+
+				$directives[] = '';
+				$directives[] = "\t" . '# CSP';
+				$directives[] = "\t" . 'Header always set ' . $header_name . ' "' . $csp_value . '"';
+			}
 		}
 
 		// X-Content-Type-Options
